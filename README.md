@@ -75,14 +75,14 @@ Innsender laster opp zip fil som inneholder forsendelse og får referanse til en
 * ReceiptStatusEnum.VALIDATION_FAILED - Forsendelsen feilet i mottak. Etter kvittering med denne statusen vil innsender få tilsendt en fil som inneholder forsendelsestatus med feilmelding.
 * ReceiptStatusEnum.REJECTED - tinglysing klarte ikke å ta i mot filen, feilmelding gitt i kvittering. Innsender vil ikke tilsendt statusendringer på denne filen. 
 
-![Innsending av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/gunnmarie/eksempelklient-etinglysing-altinn/release/doc/altinn-opplasting.png)
+![Innsending av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/altinn-opplasting.png)
 
 ### Nedlasting av tinglyingstatus
 Innsender sjekker om det har kommet statusoppdatering på noen av forsendelsene man har sendt inn til Altinn ved å sjekke om det har kommet noen nye filer. Dersom det har kommet en forsendelsestatus vil man kunne matche dette mot innsendt forsendelse ved at de vil ha samme forsendelsereferanse. 
 Dersom filen av en eller annen grunn ikke inneholder forsendelsereferanse må man koble tinglysingstatus til innsendt forsendelse gjennom sendersReference.
 Forsendelsestatus vil alltid ha samme sendersReference som den innkommende filen. Her er det imidlertid ingen duplikat sjekk, innsender må derfor selv sørge for at denne er unik for hver innsendte fil dersom man skal kunne matche mottatte filer uten forsendelsesreferanse mot filer man har sendt fra seg. 
 
-![Nedlasting av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/gunnmarie/eksempelklient-etinglysing-altinn/release/doc/altinn-nedlasting.png)
+![Nedlasting av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/altinn-nedlasting.png)
 
 ### Innhold av filene
 
@@ -91,7 +91,7 @@ Når Altinn mottar filen så pakkes den ut, og det blir lagt på en fil som hete
 Disse to filene blir på nytt lagt i en zip før den blir videresendt til mottaker.
 Kartverket støtter kun innsending av en fil av gangen, dvs hver zip fil skal kun inneholde en forsendelse. Filen som pakkes inn i zip filen skal være en xml fil som inneholder forsendelse på formatet i innsending.xsd.
 
-![Behandling av zip filer i Altinn formidlingstjeneste](https://raw.githubusercontent.com/gunnmarie/eksempelklient-etinglysing-altinn/release/doc/innhold-zip.png)
+![Behandling av zip filer i Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/innhold-zip.png)
 
 På samme måte som forsendelse som skal sendes inn til tinglysing pakkes inn i en zip fil, vil forsendelsesstatus som sendes tilbake fra Kartverket også være pakket inn i en zip fil. Zip filen vil inneholde manifest.xml (lagt på av Altinn) og en forsendelsesstatus på formatet definert i innsending.xsd.
 Responsen fra Kartverket vil alltid kun inneholde en forsendelsesstatus i hver fil.
