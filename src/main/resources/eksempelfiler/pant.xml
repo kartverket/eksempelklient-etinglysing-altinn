@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
+    <forsendelsesreferanse>89739789283</forsendelsesreferanse>
+    <usignertMelding>
+        <dokumenter>
+            <dokument>
+                <dokumentreferanse>1</dokumentreferanse>
+                <rettsstiftelser>
+                    <pant>
+                        <rettsstiftelsesreferanse>pant.test</rettsstiftelsesreferanse>
+                        <rettsstiftelsestype>
+                            <kodeverdi>OB_PDO</kodeverdi>
+                            <navn>PANTEDOKUMENT</navn>
+                        </rettsstiftelsestype>
+                        <rettighetshavere>
+                            <person>
+                                <navn>NORDEA BANK NORGE ASA</navn>
+                                <identifikasjonsnummer>911044110</identifikasjonsnummer>
+                            </person>
+                        </rettighetshavere>
+                        <hefterI>
+                            <delAvRegisterenhetsrett>
+                                <registerenhetsrett>
+                                    <registerenhetsrettstype>
+                                        <kodeverdi>E</kodeverdi>
+                                        <navn>Eiendomsrett</navn>
+                                    </registerenhetsrettstype>
+                                    <registerenhet>
+                                        <matrikkelenhet>
+                                            <kommunenummer>0301</kommunenummer>
+                                            <kommunenavn>OSLO</kommunenavn>
+                                            <gaardsnummer>82</gaardsnummer>
+                                            <bruksnummer>1</bruksnummer>
+                                            <festenummer>0</festenummer>
+                                            <seksjonsnummer>0</seksjonsnummer>
+                                        </matrikkelenhet>
+                                    </registerenhet>
+                                </registerenhetsrett>
+                                <begrensetTil>
+                                    <registerenhetsrettsandel>
+                                        <teller>1</teller>
+                                        <nevner>2</nevner>
+                                        <rettighetshaver>
+                                            <navn>Ola Nordmann</navn>
+                                            <identifikasjonsnummer>15048049769</identifikasjonsnummer>
+                                        </rettighetshaver>
+                                    </registerenhetsrettsandel>
+                                </begrensetTil>
+                            </delAvRegisterenhetsrett>
+                            <delAvRegisterenhetsrett>
+                                <registerenhetsrett>
+                                    <registerenhetsrettstype>
+                                        <kodeverdi>E</kodeverdi>
+                                        <navn>Eiendomsrett</navn>
+                                    </registerenhetsrettstype>
+                                    <registerenhet>
+                                        <borettslagsandel>
+                                            <borettslagnummer>952923978</borettslagnummer>
+                                            <borettslagnavn>STEINMO BORETTSLAG</borettslagnavn>
+                                            <andelsnummer>1</andelsnummer>
+                                        </borettslagsandel>
+                                    </registerenhet>
+                                </registerenhetsrett>
+                                <begrensetTil>
+                                    <registerenhetsrettsandel>
+                                        <teller>1</teller>
+                                        <nevner>2</nevner>
+                                        <rettighetshaver>
+                                            <navn>Kari Nordmann</navn>
+                                            <identifikasjonsnummer>15048049688</identifikasjonsnummer>
+                                        </rettighetshaver>
+                                    </registerenhetsrettsandel>
+                                </begrensetTil>
+                            </delAvRegisterenhetsrett>
+                        </hefterI>
+                        <beloep>
+                            <beloep>
+                                <beloepsverdi>1000000</beloepsverdi>
+                                <valutakode>
+                                    <kodeverdi>NOK</kodeverdi>
+                                    <navn>Norske kroner</navn>
+                                </valutakode>
+                            </beloep>
+                        </beloep>
+                        <pantsettere>
+                            <person>
+                                <navn>Ola Nordmann</navn>
+                                <identifikasjonsnummer>15048049769</identifikasjonsnummer>
+                            </person>
+                            <person>
+                                <navn>Kari Nordmann</navn>
+                                <identifikasjonsnummer>15048049688</identifikasjonsnummer>
+                            </person>
+                        </pantsettere>
+                        <erklaeringerOmSivilstand>
+                            <erklaeringOmSivilstand>
+                                <erklaeringFor>
+                                    <navn>Ola Nordmann</navn>
+                                    <identifikasjonsnummer>15048049769</identifikasjonsnummer>
+                                </erklaeringFor>
+                                <kreverSamtykke>true</kreverSamtykke>
+                                <ektefellePartner>
+                                    <navn>Kari Nordmann</navn>
+                                    <identifikasjonsnummer>15048049688</identifikasjonsnummer>
+                                </ektefellePartner>
+                            </erklaeringOmSivilstand>
+                            <erklaeringOmSivilstand>
+                                <erklaeringFor>
+                                    <navn>Kari Nordmann</navn>
+                                    <identifikasjonsnummer>15048049688</identifikasjonsnummer>
+                                </erklaeringFor>
+                                <kreverSamtykke>true</kreverSamtykke>
+                                <ektefellePartner>
+                                    <navn>Ola Nordmann</navn>
+                                    <identifikasjonsnummer>15048049769</identifikasjonsnummer>
+                                </ektefellePartner>
+                            </erklaeringOmSivilstand>
+                        </erklaeringerOmSivilstand>
+                    </pant>
+                </rettsstiftelser>
+            </dokument>
+        </dokumenter>
+        <foelgebrev>
+            <innsender>
+                <identifikasjonsnummer>911044110</identifikasjonsnummer>
+            </innsender>
+            <dokumentrekkefoelge>
+                <referanse>
+                    <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
+                </referanse>
+            </dokumentrekkefoelge>
+        </foelgebrev>
+    </usignertMelding>
+    <ikkeDigitaleSignaturer>
+        <signatur>
+            <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
+            <personidentifikasjonsnummer>15048049769</personidentifikasjonsnummer>
+        </signatur>
+        <signatur>
+            <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
+            <personidentifikasjonsnummer>15048049688</personidentifikasjonsnummer>
+        </signatur>
+    </ikkeDigitaleSignaturer>
+</forsendelse>

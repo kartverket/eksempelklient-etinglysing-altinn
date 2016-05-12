@@ -1,0 +1,192 @@
+group = 'no.kartverket.altinn'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+apply from: file('libraries.gradle')
+
+def generatedSrcDir = file("$buildDir/generated-src")
+
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        //compileClasspath += configurations.provided
+        java {
+            srcDirs 'src/main/java', generatedSrcDir
+        }
+    }
+    test {
+        runtimeClasspath += configurations.provided
+    }
+}
+
+
+idea.module {
+    //scopes.PROVIDED.plus += [ configurations.provided ]
+    //Needed to make IDEA see the generated classes
+    excludeDirs -= file("$buildDir")
+    sourceDirs += generatedSrcDir
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+compileJava.dependsOn(processResources)
+repositories {
+    mavenCentral()
+    maven {
+        url "http://nnriap501:8081/repository/maven-public/"
+    }
+}
+
+configurations {
+    wsImport
+    wsImportWithXJCBinding
+    innsendingService
+}
+
+
+dependencies {
+    wsImport libraries.jaxws_tools
+
+    wsImportWithXJCBinding libraries.jaxws_tools
+    wsImportWithXJCBinding libraries.jaxb_xjc
+    wsImportWithXJCBinding libraries.jaxb2_basics_runtime
+    wsImportWithXJCBinding libraries.jaxb2_basics
+    wsImportWithXJCBinding libraries.jaxb2_basics_tools
+    wsImportWithXJCBinding libraries.jaxb2_commons_lang
+
+    innsendingService libraries.gbok_innsending
+
+    provided libraries.jaxws_rt
+
+    compile libraries.jodatime
+    compile libraries.guava
+    compile (libraries.jaxb2_basics_runtime) {
+        exclude module: 'jaxb-runtime'
+        exclude module: 'jaxb-api'
+    }
+
+    testCompile libraries.junit
+    testRuntime libraries.cxf_rt_transports
+    testRuntime libraries.gbok_innsending
+}
+
+task checkJavaVersion << {
+    if (!JavaVersion.current().isJava8()) {
+        String message = "ERROR: Java 1.8 er p�krevet, men " +
+                JavaVersion.current() +
+                " blir benyttet. Endre JAVA_HOME systemvariabel og PATH slik at den bruker riktig java-versjon for bygging.";
+        throw new IllegalStateException(message);
+    }
+}
+
+tasks.withType(Test) {
+    systemProperties = System.getProperties()
+}
+
+task('runDemo', group: 'Eksempelklient', type: JavaExec) {
+    description = 'Demonstrerer innsending av pant som blir godkjent, blir avvisst pga duplikat forsendelsesreferanse og en som blir avvist pga formatfeil'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
+    args = ['/eksempelfiler/pant.xml', '/eksempelfiler/pant.xml', '/eksempelfiler/ugyldig.xml']
+    systemProperties = System.getProperties()
+}
+
+
+//noinspection GroovyAssignabilityCheck
+task createGeneratedDir() << {
+    def classesDir = sourceSets.main.output.classesDir
+    def destDir = generatedSrcDir
+
+    if(!classesDir.exists()) {
+        classesDir.mkdirs()
+    }
+    if( !destDir.exists() ) {
+        destDir.mkdirs()
+    }
+}
+
+task extractInnsendingService(dependsOn: createGeneratedDir, type: Copy) {
+    from {
+        configurations.innsendingService.collect { zipTree(it) }
+    }
+    into "$buildDir/innsendingService/"
+}
+
+task wsImportBrokerServiceExternalBasic(dependsOn: createGeneratedDir) {
+    def sourceWsdl = file('src/main/resources/altinn/BrokerServiceExternalBasic.wsdl')
+    inputs.file sourceWsdl
+    outputs.dir generatedSrcDir
+
+    doLast {
+        ant.taskdef(name: 'wsimport', classname: 'com.sun.tools.ws.ant.WsImport', classpath: configurations.wsImport.asPath)
+        ant.wsimport(keep: true,
+                destDir: sourceSets.main.output.classesDir,
+                sourcedestdir: generatedSrcDir,
+                wsdl: sourceWsdl,
+                wsdlLocation: '/altinn/BrokerServiceExternalBasic.wsdl')
+    }
+}
+
+
+task wsImportBrokerServiceExternalBasicStreamed(dependsOn: createGeneratedDir) {
+    def sourceWsdl = file('src/main/resources/altinn/BrokerServiceExternalBasicStreamed.wsdl')
+    inputs.file sourceWsdl
+    outputs.dir generatedSrcDir
+
+    doLast {
+        ant.taskdef(name: 'wsimport', classname: 'com.sun.tools.ws.ant.WsImport', classpath: configurations.wsImport.asPath)
+        ant.wsimport(keep: true,
+                destDir: sourceSets.main.output.classesDir,
+                sourcedestdir: generatedSrcDir,
+                wsdl: sourceWsdl,
+                wsdlLocation: '/altinn/BrokerServiceExternalBasicStreamed.wsdl',
+                xadditionalHeaders: true,
+                package: 'no.altinn.services.streamed')
+    }
+}
+
+task wsImportReceiptExternalBasic(dependsOn: createGeneratedDir) {
+    def sourceWsdl = file('src/main/resources/altinn/ReceiptExternalBasic.wsdl')
+    inputs.file sourceWsdl
+    outputs.dir generatedSrcDir
+
+    doLast {
+        ant.taskdef(name: 'wsimport', classname: 'com.sun.tools.ws.ant.WsImport', classpath: configurations.wsImport.asPath)
+        ant.wsimport(keep: true,
+                destDir: sourceSets.main.output.classesDir,
+                sourcedestdir: generatedSrcDir,
+                wsdl: sourceWsdl,
+                wsdlLocation: '/altinn/ReceiptExternalBasic.wsdl')
+    }
+}
+
+task wsImportInnsendingService(dependsOn: extractInnsendingService) {
+    def sourceWsdl = file("$buildDir/innsendingService/InnsendingServiceWS.wsdl")
+    inputs.file sourceWsdl
+    outputs.dir generatedSrcDir
+
+    doLast {
+        ant.taskdef(name: 'wsimport', classname: 'com.sun.tools.ws.ant.WsImport', classpath: configurations.wsImport.asPath)
+        ant.wsimport(keep: true,
+                destDir: sourceSets.main.output.classesDir,
+                sourcedestdir: generatedSrcDir,
+                wsdl: sourceWsdl,
+                wsdlLocation: 'innsendingService/InnsendingServiceWS.wsdl',
+                xnocompile: true)
+    }
+}
+
+compileJava.dependsOn checkJavaVersion
+compileJava.dependsOn(wsImportBrokerServiceExternalBasic)
+compileJava.dependsOn(wsImportBrokerServiceExternalBasicStreamed)
+compileJava.dependsOn(wsImportReceiptExternalBasic)
+compileJava.dependsOn(wsImportInnsendingService)

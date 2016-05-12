@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
+    <forsendelsesreferanse>1</forsendelsesreferanse>
+    <usignertMelding>
+        <dokumenter>
+            <dokument>
+                <dokumentreferanse>1</dokumentreferanse>
+                <rettsstiftelser>
+                    <anmerkningPaaPerson>
+                        <rettsstiftelsesreferanse>anmerkning.test</rettsstiftelsesreferanse>
+                        <rettsstiftelsestype>
+                            <kodeverdi>ET_KKM</kodeverdi>
+                            <navn>KONKURS</navn>
+                        </rettsstiftelsestype>
+
+                        <saksnummer>123</saksnummer>
+
+                        <anmerketPerson>
+                            <navn>Per Nordmann</navn>
+                            <identifikasjonsnummer>15048000123</identifikasjonsnummer>
+                        </anmerketPerson>
+
+                        <konkursbo>
+                            <navn>NORGES BANK</navn>
+                            <identifikasjonsnummer>937884117</identifikasjonsnummer>
+                        </konkursbo>
+
+                        <bostyrer>
+                            <navn>NORGES BANK</navn>
+                            <identifikasjonsnummer>937884117</identifikasjonsnummer>
+                        </bostyrer>
+                    </anmerkningPaaPerson>
+                </rettsstiftelser>
+            </dokument>
+        </dokumenter>
+        <foelgebrev>
+            <innsender>
+                <identifikasjonsnummer>911044110</identifikasjonsnummer>
+            </innsender>
+            <dokumentrekkefoelge>
+                <referanse>
+                    <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
+                </referanse>
+            </dokumentrekkefoelge>
+        </foelgebrev>
+    </usignertMelding>
+    <ikkeDigitaleSignaturer>
+    </ikkeDigitaleSignaturer>
+
+</forsendelse>
