@@ -42,7 +42,7 @@ compileJava.dependsOn(processResources)
 repositories {
     mavenCentral()
     maven {
-        url "http://nnriap501:8081/repository/maven-public/"
+        url "https://nexus.grunnbok.no/repository/maven-public/"
     }
 }
 

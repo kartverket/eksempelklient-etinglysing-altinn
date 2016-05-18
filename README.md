@@ -51,9 +51,18 @@ i andre byggefiler hvis prosjeket skal bygge feks med maven
     repositories {
         mavenCentral()
         maven {
-            url "http://nnriap501:8081/repository/maven-public/"
+           url "https://nexus.grunnbok.no/repository/maven-public/"
         }
     }
+
+Litt avhengig av hvilken javaversjon du kjører så kan det hende at serversertifikatet på nexus.grunnbok.no ikke ligger i cacerts og dette kan føre til følgnde feil:
+
+    sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+Innstaller sertifikatene i stien for nexus.grunnbok.no, disse er lagt inn i `certs/*.cer` og kan installeres slik:
+
+    keytool -import -noprompt -trustcacerts -alias digicertcave -file   c:\workspace\digicert.cer -keystore %JAVA_HOME%\jre\lib\security\cacerts
+    keytool -import -noprompt -trustcacerts -alias digicertcave -file   c:\workspace\digicert-intermediary.cer -keystore %JAVA_HOME%\jre\lib\security\cacerts
 
 Dokumentasjon av Altinn sine tjenester finnes her:
 https://altinnett.brreg.no/no/Sluttbrukersystemer/
