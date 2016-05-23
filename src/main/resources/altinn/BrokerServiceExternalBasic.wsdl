@@ -180,6 +180,21 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="ConfirmDownloadedBasic">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element minOccurs="1" name="systemUserName" type="xsd:string"/>
+                        <xsd:element minOccurs="1" name="systemPassword" type="xsd:string"/>
+                        <xsd:element minOccurs="1" name="fileReference" type="xsd:string"/>
+                        <xsd:element minOccurs="1" name="reportee" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ConfirmDownloadedBasicResponse">
+                <xsd:complexType>
+                    <xsd:sequence/>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
         <xsd:schema xmlns:tns="http://schemas.altinn.no/services/ServiceEngine/Broker/2015/06" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.altinn.no/services/ServiceEngine/Broker/2015/06">
             <xsd:import namespace="http://schemas.altinn.no/services/serviceEntity/2015/06"/>
@@ -706,6 +721,15 @@
     <wsdl:message name="IBrokerServiceExternalBasic_GetAvailableFilesBasic_AltinnFaultFault_FaultMessage">
         <wsdl:part xmlns:q10="http://www.altinn.no/services/common/fault/2009/10" name="detail" element="q10:AltinnFault"/>
     </wsdl:message>
+    <wsdl:message name="IBrokerServiceExternalBasic_ConfirmDownloadedBasic_InputMessage">
+        <wsdl:part name="parameters" element="tns:ConfirmDownloadedBasic"/>
+    </wsdl:message>
+    <wsdl:message name="IBrokerServiceExternalBasic_ConfirmDownloadedBasic_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ConfirmDownloadedBasicResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IBrokerServiceExternalBasic_ConfirmDownloadedBasic_AltinnFaultFault_FaultMessage">
+        <wsdl:part xmlns:q11="http://www.altinn.no/services/common/fault/2009/10" name="detail" element="q11:AltinnFault"/>
+    </wsdl:message>
     <wsdl:portType name="IBrokerServiceExternalBasic">
         <wsdl:documentation>
             <summary>
@@ -762,6 +786,11 @@
             <wsdl:output wsaw:Action="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/GetAvailableFilesBasicResponse" message="tns:IBrokerServiceExternalBasic_GetAvailableFilesBasic_OutputMessage"/>
             <wsdl:fault wsaw:Action="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/GetAvailableFilesBasicAltinnFaultFault" name="AltinnFaultFault" message="tns:IBrokerServiceExternalBasic_GetAvailableFilesBasic_AltinnFaultFault_FaultMessage"/>
         </wsdl:operation>
+        <wsdl:operation name="ConfirmDownloadedBasic">
+            <wsdl:input wsaw:Action="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/ConfirmDownloadedBasic" message="tns:IBrokerServiceExternalBasic_ConfirmDownloadedBasic_InputMessage"/>
+            <wsdl:output wsaw:Action="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/ConfirmDownloadedBasicResponse" message="tns:IBrokerServiceExternalBasic_ConfirmDownloadedBasic_OutputMessage"/>
+            <wsdl:fault wsaw:Action="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/ConfirmDownloadedBasicAltinnFaultFault" name="AltinnFaultFault" message="tns:IBrokerServiceExternalBasic_ConfirmDownloadedBasic_AltinnFaultFault_FaultMessage"/>
+        </wsdl:operation>
     </wsdl:portType>
     <wsdl:binding name="BasicHttpBinding_IBrokerServiceExternalBasic" type="tns:IBrokerServiceExternalBasic">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -791,6 +820,18 @@
         </wsdl:operation>
         <wsdl:operation name="GetAvailableFilesBasic">
             <soap:operation soapAction="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/GetAvailableFilesBasic" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AltinnFaultFault">
+                <soap:fault name="AltinnFaultFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="ConfirmDownloadedBasic">
+            <soap:operation soapAction="http://www.altinn.no/services/ServiceEngine/Broker/2015/06/IBrokerServiceExternalBasic/ConfirmDownloadedBasic" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>

@@ -12,6 +12,7 @@ import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasic;
 import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasicGetReceiptBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasicUpdateReceiptBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasic;
+import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasicConfirmDownloadedBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasicGetAvailableFilesBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasicInitiateBrokerServiceBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.streamed.*;
@@ -95,6 +96,7 @@ public class AltinnService {
         try {
             byte[] zipPayload = brokerServiceExternalBasicServiceStreamed.downloadFileStreamedBasic(systemUser, systemPassword, brokerAvaliableFile.getFileReference(), reportee);
             forsendelseResponse.extractResponseFromZip(zipPayload);
+            confirmDownload(brokerAvaliableFile.getFileReference(), reportee);
             updateReceipt(receiptId);
             System.out.println(String.format("Lastet ned zipfil som inneholder fil %s" , forsendelseResponse.getFileName()));
             return forsendelseResponse;
@@ -103,6 +105,14 @@ public class AltinnService {
         }
     }
 
+    private void confirmDownload(String fileReference, String reportee) {
+        IBrokerServiceExternalBasic brokerServiceExternalBasic = serviceFactory.getBrokerServiceExternalBasicService();
+        try {
+            brokerServiceExternalBasic.confirmDownloadedBasic(systemUser, systemPassword, fileReference, reportee);
+        } catch (IBrokerServiceExternalBasicConfirmDownloadedBasicAltinnFaultFaultFaultMessage message) {
+            throw new RuntimeException("ERROR: Kunne ikke bekrefte nedlasting av fil til Altinn: "+ getAltinnFaultAsString(message.getFaultInfo()));
+        }
+    }
 
 
     private BrokerServiceInitiation createBrokerServiceInitiation(Manifest manifest, String recipientPartyNumber) {
