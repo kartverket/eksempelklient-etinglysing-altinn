@@ -40,7 +40,13 @@ public class EksempelfilerValideringsTest {
                 }
             }
         }
-        assertEquals(0, validationFailures.size());
+        assertEquals(listFilesWithValidationFailures(validationFailures), 0, validationFailures.size());
+    }
+
+    private String listFilesWithValidationFailures(List<String> validationFailures) {
+        StringBuilder result = new StringBuilder();
+        validationFailures.stream().forEach(failure -> result.append(failure).append(", "));
+        return result.toString();
     }
 
 

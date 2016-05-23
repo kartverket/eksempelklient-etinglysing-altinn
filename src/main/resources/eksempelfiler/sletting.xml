@@ -16,26 +16,30 @@
                         <endrer>
                             <delAvRett>
                                 <rettsstiftelse>
-                                    <dokumentaar>2013</dokumentaar>
-                                    <dokumentnummer>123</dokumentnummer>
-                                    <embetenummer>200</embetenummer>
-                                    <rettsstiftelsesnummer>1</rettsstiftelsesnummer>
-                                    <rettsstiftelsestype>
-                                        <kodeverdi>OB_PDO</kodeverdi>
-                                        <navn>PANTEDOKUMENT</navn>
-                                    </rettsstiftelsestype>
+                                    <rettsstiftelseReferanse>
+                                        <dokumentaar>2013</dokumentaar>
+                                        <dokumentnummer>123</dokumentnummer>
+                                        <embetenummer>200</embetenummer>
+                                        <rettsstiftelsesnummer>1</rettsstiftelsesnummer>
+                                        <rettsstiftelsestype>
+                                            <kodeverdi>OB_PDO</kodeverdi>
+                                            <navn>PANTEDOKUMENT</navn>
+                                        </rettsstiftelsestype>
+                                    </rettsstiftelseReferanse>
                                 </rettsstiftelse>
                             </delAvRett>
                             <delAvRett>
                                 <rettsstiftelse>
-                                    <dokumentaar>2013</dokumentaar>
-                                    <dokumentnummer>456</dokumentnummer>
-                                    <embetenummer>200</embetenummer>
-                                    <rettsstiftelsesnummer>1</rettsstiftelsesnummer>
-                                    <rettsstiftelsestype>
-                                        <kodeverdi>OB_PDO</kodeverdi>
-                                        <navn>PANTEDOKUMENT</navn>
-                                    </rettsstiftelsestype>
+                                    <rettsstiftelseReferanse>
+                                        <dokumentaar>2013</dokumentaar>
+                                        <dokumentnummer>456</dokumentnummer>
+                                        <embetenummer>200</embetenummer>
+                                        <rettsstiftelsesnummer>1</rettsstiftelsesnummer>
+                                        <rettsstiftelsestype>
+                                            <kodeverdi>OB_PDO</kodeverdi>
+                                            <navn>PANTEDOKUMENT</navn>
+                                        </rettsstiftelsestype>
+                                    </rettsstiftelseReferanse>
                                 </rettsstiftelse>
                             </delAvRett>
                         </endrer>
