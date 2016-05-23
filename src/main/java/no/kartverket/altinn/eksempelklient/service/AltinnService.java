@@ -1,15 +1,15 @@
 package no.kartverket.altinn.eksempelklient.service;
 
-import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
-import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptSearchExternal;
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptStatusEnum;
+import no.altinn.schemas.services.intermediary.receipt._2015._06.Receipt;
 import no.altinn.schemas.services.intermediary.receipt._2015._06.ReceiptSave;
+import no.altinn.schemas.services.intermediary.receipt._2015._06.ReceiptSearch;
 import no.altinn.schemas.services.serviceengine.broker._2015._06.*;
 import no.altinn.schemas.services.serviceengine.broker._2015._06.ObjectFactory;
 import no.altinn.schemas.services.serviceentity._2015._06.BrokerServiceAvailableFileStatus;
 import no.altinn.services.common.fault._2009._10.AltinnFault;
 import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasic;
-import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasicGetReceiptBasicAltinnFaultFaultFaultMessage;
+import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasicGetReceiptBasicV2AltinnFaultFaultFaultMessage;
 import no.altinn.services.intermediary.receipt._2009._10.IReceiptExternalBasicUpdateReceiptBasicAltinnFaultFaultFaultMessage;
 import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasic;
 import no.altinn.services.serviceengine.broker._2015._06.IBrokerServiceExternalBasicConfirmDownloadedBasicAltinnFaultFaultFaultMessage;
@@ -135,13 +135,13 @@ public class AltinnService {
         return manifest;
     }
 
-    public ReceiptExternal downloadReceipt(Integer receiptId) {
+    public Receipt downloadReceipt(Integer receiptId) {
         IReceiptExternalBasic receiptExternalBasic = serviceFactory.getReceiptExternalBasic();
-        ReceiptSearchExternal receiptSearchExternal = new ReceiptSearchExternal();
-        receiptSearchExternal.setReceiptId(receiptId);
+        ReceiptSearch receiptSearch = new ReceiptSearch();
+        receiptSearch.setReceiptId(receiptId);
         try {
-            return receiptExternalBasic.getReceiptBasic(systemUser, systemPassword, receiptSearchExternal);
-        } catch (IReceiptExternalBasicGetReceiptBasicAltinnFaultFaultFaultMessage message) {
+            return receiptExternalBasic.getReceiptBasicV2(systemUser, systemPassword, receiptSearch);
+        } catch (IReceiptExternalBasicGetReceiptBasicV2AltinnFaultFaultFaultMessage message) {
             throw new RuntimeException(String.format("ERROR: Feil ved nedlasting av kvittering for kvitteringsid: %d, altinn fault: %s", receiptId, getAltinnFaultAsString(message.getFaultInfo())));
         }
     }

@@ -1,8 +1,8 @@
 package no.kartverket.altinn.eksempelklient;
 
 
-import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptStatusEnum;
+import no.altinn.schemas.services.intermediary.receipt._2015._06.Receipt;
 import no.altinn.services.streamed.IBrokerServiceExternalBasicStreamedUploadFileStreamedBasicAltinnFaultFaultFaultMessage;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelseResponse;
@@ -49,8 +49,8 @@ public class LastOppOgHentUtFilFraAltinnTest {
         }
 
         //Henter kvittering:
-        ReceiptExternal kvittering = altinnService.downloadReceipt(receiptId);
-        assertEquals(ReceiptStatusEnum.OK, kvittering.getReceiptStatusCode());
+        Receipt kvittering = altinnService.downloadReceipt(receiptId);
+        assertEquals(ReceiptStatusEnum.OK, kvittering.getReceiptStatus());
         assertFalse(kvittering.getReceiptText().getValue().startsWith(VentPaaKvitteringFraMottakerScenario.KVITTERINGTEKST_MOTTATT_OK));
 
 
@@ -64,9 +64,9 @@ public class LastOppOgHentUtFilFraAltinnTest {
 
         //Sjekker at kvittering sier at nå er filen lastet ned av mottaker
         kvittering = altinnService.downloadReceipt(receiptId);
-        assertEquals(ReceiptStatusEnum.OK, kvittering.getReceiptStatusCode());
-        checkState(kvittering.getSubReceipts().getValue().getReceiptExternal().size()==1, "Forventer kun en subreceipt fordi vi kun har sendt filen til en mottaker");
-        ReceiptExternal receiptFromRecepient = kvittering.getSubReceipts().getValue().getReceiptExternal().iterator().next();
+        assertEquals(ReceiptStatusEnum.OK, kvittering.getReceiptStatus());
+        checkState(kvittering.getSubReceipts().getValue().getReceipt().size()==1, "Forventer kun en subreceipt fordi vi kun har sendt filen til en mottaker");
+        Receipt receiptFromRecepient = kvittering.getSubReceipts().getValue().getReceipt().iterator().next();
         assertTrue(receiptFromRecepient.getReceiptText().getValue(), receiptFromRecepient.getReceiptText().getValue().contains(AltinnService.OK_RECEIPT_TEXT));
     }
 
