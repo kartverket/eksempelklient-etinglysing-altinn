@@ -10,7 +10,8 @@ ext.libraries = [
         jaxb2_basics_tools  : "org.jvnet.jaxb2_commons:jaxb2-basics-tools:${jaxb2Version}",
         jaxb2_commons_lang  : "org.jvnet.jaxb2_commons:jaxb2-commons-lang:2.3",
         cxf_rt_transports   : "org.apache.cxf:cxf-rt-transports-http-jetty:3.1.3",
-        gbok_innsending     : "no.kartverket.grunnbok:gbok-innsending:2.5.0-SNAPSHOT",
+        gbok_innsending     : "no.kartverket.grunnbok:gbok-innsending:2.6.0-SNAPSHOT",
+        gbok_xslt           : "no.kartverket.grunnbok:gbok-xslt:2.6.0-SNAPSHOT",
         guava               : 'com.google.guava:guava:18.0',
         jodatime            : 'joda-time:joda-time:2.3'
 ]
