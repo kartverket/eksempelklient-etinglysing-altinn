@@ -75,6 +75,7 @@ Fra Altinn sine tjenester benyttes følgende:
 * Hent kvitteringsstatus for opplastet fil: ReceiptExternalBasic.getReceiptBasic
 * Sjekk om det finnes filer klare for nedlasting: BrokerServiceExternalBasic.getAvailableFilesBasic
 * Last ned filer: BrokerServiceExternalBasicStreamed.downloadFileStreamedBasic
+* Bekreft nedlasting av fil:  BrokerService.confirmDownloadBasic
 
 ### Innsending av forsendelse
 
