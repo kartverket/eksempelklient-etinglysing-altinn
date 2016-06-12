@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkState;
 public class AltinnFileExtractor {
     private final String name;
     private byte[] target = new byte[0];
+    private byte[] manifestTarget = new byte[0];
 
     public String getName() {
         return name;
@@ -33,9 +34,10 @@ public class AltinnFileExtractor {
                 final ZipEntry entry = entries.nextElement();
                 try (final InputStream inputStream = zipFile.getInputStream(entry)) {
                     ByteStreams.copy(inputStream, data);
-                    if (!entry.getName().equals("manifest.xml")) {
+                    if (entry.getName().equals("manifest.xml")) {
+                        manifestTarget = data.toByteArray();
+                    } else {
                         files.add(entry.getName());
-                        checkState(files.size() == 1, "Multiple files in zip is not supported", files);
                         target = data.toByteArray();
                     }
                 }
@@ -53,5 +55,7 @@ public class AltinnFileExtractor {
         return target;
     }
 
-
+    public byte[] getManifestTargetRaw() {
+        return manifestTarget;
+    }
 }

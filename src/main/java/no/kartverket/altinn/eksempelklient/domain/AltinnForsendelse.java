@@ -17,25 +17,35 @@ import java.util.List;
 
 public class AltinnForsendelse {
 
+
+
     public enum ForsendelseRequestStatus {SENT, UPLOADED_OK, MOTTATT, VALIDATION_FAILED, FEILET}
 
     private ForsendelseRequestStatus forsendelseRequestStatus;
     private final String fileName;
     private final byte [] forsendelsePayload;
+    private final InnsendingOperation operation;
 
     private final List<AltinnForsendelseResponse> responses = new ArrayList<>();
 
     //referanse satt av innsender i forsendelsePayload, unik pr forsendelse
-    private final String forsendelsereferanse;
+    private String forsendelsereferanse;
+    private String innsendingsId;
 
     //Altinn referanser
     private final AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation();
 
-    public AltinnForsendelse(String filename, String sendersReference) {
+    public AltinnForsendelse(String filename, String sendersReference, InnsendingOperation operation) {
         this.fileName = filename;
+        this.operation = operation;
         this.forsendelsePayload = getPayload(filename);
         this.altinnTrackerInformation.setSendersReference(sendersReference);
-        this.forsendelsereferanse = extractForsendelsereferanseFraPayload();
+        if(InnsendingOperation.sendTilTinglysing.equals(operation) || InnsendingOperation.valider.equals(operation)) {
+            this.forsendelsereferanse = extractForsendelsereferanseFraPayload();
+        }
+        if(InnsendingOperation.hentStatus.equals(operation)) {
+            this.innsendingsId = extractInnsendingsIdFraPayload();
+        }
     }
 
     public byte[] pakkInnIZipFil() {
@@ -66,6 +76,19 @@ public class AltinnForsendelse {
         }
     }
 
+    private String extractInnsendingsIdFraPayload() {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            @SuppressWarnings("unchecked")
+            JAXBElement<String> unmarshalledObject = (JAXBElement<String>) unmarshaller.unmarshal(new ByteArrayInputStream(forsendelsePayload));
+            return unmarshalledObject.getValue();
+        } catch (JAXBException e) {
+            System.out.println("ERROR: Kunne ikke hente ut innsendingsid fra forsendelse payload for fil: " + fileName);
+            return null;
+        }
+    }
+
 
     public void addForsendelseResponse(AltinnForsendelseResponse forsendelseResponse) {
         responses.add(forsendelseResponse);
@@ -83,6 +106,19 @@ public class AltinnForsendelse {
         return forsendelsereferanse;
     }
 
+    public String getInnsendingsId() {
+        return innsendingsId;
+    }
+
+    public String getIdentificationAsString() {
+        if(InnsendingOperation.hentStatus.equals(operation)) {
+            return String.format("innsendingId: %s", this.innsendingsId);
+        }
+        else {
+            return String.format("forsendelsereferanse: %s", forsendelsereferanse);
+        }
+    }
+
     public AltinnTrackerInformation getAltinnTrackerInformation() {
         return altinnTrackerInformation;
     }
@@ -93,6 +129,10 @@ public class AltinnForsendelse {
 
     public void setForsendelseRequestStatus(ForsendelseRequestStatus forsendelseRequestStatus) {
         this.forsendelseRequestStatus = forsendelseRequestStatus;
+    }
+
+    public InnsendingOperation getOperation() {
+        return operation;
     }
 
 }

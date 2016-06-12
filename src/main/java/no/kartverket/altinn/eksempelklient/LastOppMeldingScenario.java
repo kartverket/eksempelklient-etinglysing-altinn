@@ -17,7 +17,7 @@ public class LastOppMeldingScenario {
     }
 
     public void execute(AltinnForsendelse altinnForsendelse) {
-        String fileReference = altinnService.initiateBrokerService(altinnForsendelse.getAltinnTrackerInformation().getSendersReference(), reportee, recipient);
+        String fileReference = altinnService.initiateBrokerService(altinnForsendelse.getAltinnTrackerInformation().getSendersReference(), reportee, recipient, altinnForsendelse.getOperation());
         altinnForsendelse.getAltinnTrackerInformation().setFileReference(fileReference);
         System.out.println("Initiert opplasting av fil, filreferanse: " + fileReference);
         uploadFileToAltinn(altinnForsendelse);
@@ -27,7 +27,7 @@ public class LastOppMeldingScenario {
     private void uploadFileToAltinn(AltinnForsendelse altinnForsendelse) {
         try {
             Integer receiptId = altinnService.uploadFileToAltinn(altinnForsendelse, reportee);
-            System.out.println(String.format("Fil med filreferanse: %s og kvitteringsid: %s lastet opp til Altinn ", altinnForsendelse.getAltinnTrackerInformation().getFileReference(), receiptId));
+            System.out.println(String.format("Fil med filreferanse: %s og kvitteringsid: %s lastet opp til Altinn for %s", altinnForsendelse.getAltinnTrackerInformation().getFileReference(), receiptId, altinnForsendelse.getOperation()));
             System.out.println("");
             altinnForsendelse.getAltinnTrackerInformation().setReceiptId(receiptId);
             altinnForsendelse.setForsendelseRequestStatus(AltinnForsendelse.ForsendelseRequestStatus.SENT);

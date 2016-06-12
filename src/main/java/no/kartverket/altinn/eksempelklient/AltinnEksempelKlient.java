@@ -1,12 +1,15 @@
 package no.kartverket.altinn.eksempelklient;
 
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
+import no.kartverket.altinn.eksempelklient.domain.InnsendingOperation;
 import no.kartverket.altinn.eksempelklient.service.AltinnService;
 import no.kartverket.altinn.eksempelklient.service.AltinnServiceFactory;
 import no.kartverket.altinn.eksempelklient.service.ServiceParameters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AltinnEksempelKlient {
 
@@ -32,16 +35,18 @@ public class AltinnEksempelKlient {
         AltinnService altinnService = new AltinnService(serviceFactory, parameters.getSystemUserName(), parameters.getSystemPassword(), parameters.getServiceCode(), parameters.getServiceEdtionCode());
 
 
-        if(args.length == 0) {
-            System.err.println("Må angi minst en inputfil som argument");
+        if(args.length < 2) {
+            System.err.println("Må angi operasjon og minst en inputfil som argument");
             System.exit(-1);
         }
 
+        InnsendingOperation operation = getOperation(args[0]);
 
         //Scenario 1: Last opp filer til Altinn
         List<AltinnForsendelse> altinnForsendelser = new ArrayList<>();
-        for (String inputfil : args) {
-            altinnForsendelser.add(new AltinnForsendelse(inputfil, "Ref"+inputfil));
+        for (int i=1; i<args.length; i++) {
+            String inputfil = args[i];
+            altinnForsendelser.add(new AltinnForsendelse(inputfil, "Ref"+inputfil, operation));
         }
         LastOppMeldingScenario lastOppMeldingScenario = new LastOppMeldingScenario(altinnService, parameters.getReportee(), parameters.getRecepient());
         altinnForsendelser.stream().forEach(lastOppMeldingScenario::execute);
@@ -63,6 +68,18 @@ public class AltinnEksempelKlient {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private static InnsendingOperation getOperation(String operationAsString) {
+        try {
+            return InnsendingOperation.valueOf(operationAsString);
+        }
+        catch (IllegalArgumentException e) {
+            List<String> validOperations = Arrays.asList(InnsendingOperation.values()).stream().map(Enum::name).collect(Collectors.toList());
+            System.err.println(String.format("Første parameter må angi operasjon (Gyldige verdier: %s). Angitt verdi er ugyldig: '%s'", String.join(" ,", validOperations), operationAsString));
+            System.exit(-1);
+            return null;
         }
     }
 

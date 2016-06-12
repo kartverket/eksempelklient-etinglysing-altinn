@@ -19,7 +19,9 @@ import no.altinn.services.streamed.*;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelseResponse;
 import no.kartverket.altinn.eksempelklient.domain.AltinnTrackerInformation;
+import no.kartverket.altinn.eksempelklient.domain.InnsendingOperation;
 
+import javax.xml.bind.JAXBElement;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,8 +43,8 @@ public class AltinnService {
         this.serviceEditionCode = serviceEditionCode;
     }
 
-    public String initiateBrokerService(String sendersReference, String reportee, String recipient) {
-        Manifest manifest = createManifest(sendersReference, reportee);
+    public String initiateBrokerService(String sendersReference, String reportee, String recipient, InnsendingOperation operation) {
+        Manifest manifest = createManifest(sendersReference, reportee, operation);
         BrokerServiceInitiation brokerServiceInitiation = createBrokerServiceInitiation(manifest, recipient);
         IBrokerServiceExternalBasic brokerServiceExternalBasicService = serviceFactory.getBrokerServiceExternalBasicService();
         try {
@@ -62,6 +64,7 @@ public class AltinnService {
 
     public List<AltinnForsendelseResponse> lastNedTilgjengeligeFiler(String reportee) {
         BrokerServiceAvailableFileList avaliableFileList = hentTingjengeligeFiler(reportee);
+        System.out.println(String.format("Fant %d nye filer tilgjengelig for nedlasting i Altinn", avaliableFileList.getBrokerServiceAvailableFile().size()));
         return avaliableFileList.getBrokerServiceAvailableFile().stream().map(avaliableFile -> lastNedFil(avaliableFile, reportee)).collect(Collectors.toList());
     }
 
@@ -93,6 +96,7 @@ public class AltinnService {
         AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation(sendersReference, fileReference, receiptId);
         AltinnForsendelseResponse forsendelseResponse = new AltinnForsendelseResponse(altinnTrackerInformation);
         IBrokerServiceExternalBasicStreamed brokerServiceExternalBasicServiceStreamed = serviceFactory.getBrokerServiceExternalBasicServiceStreamed();
+        System.out.println(String.format("Lastet ned fil med filreferanse %s fra Altinn" , forsendelseResponse.getAltinnTrackerInformation().getFileReference()));
         try {
             byte[] zipPayload = brokerServiceExternalBasicServiceStreamed.downloadFileStreamedBasic(systemUser, systemPassword, brokerAvaliableFile.getFileReference(), reportee);
             forsendelseResponse.extractResponseFromZip(zipPayload);
@@ -126,10 +130,17 @@ public class AltinnService {
         return brokerServiceInitiation;
     }
 
-    private Manifest createManifest(String sendersReference, String reportee) {
+    private Manifest createManifest(String sendersReference, String reportee, InnsendingOperation operation) {
         Manifest manifest = new Manifest();
         manifest.setExternalServiceCode(this.serviceCode);
         manifest.setExternalServiceEditionCode(this.serviceEditionCode);
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<ArrayOfProperty> jaxbArrayOfProperty = objectFactory.createManifestPropertyList(new ArrayOfProperty());
+        Property property = new Property();
+        property.setPropertyKey("operation");
+        property.setPropertyValue(operation.name());
+        jaxbArrayOfProperty.getValue().getProperty().add(property);
+        manifest.setPropertyList(jaxbArrayOfProperty);
         manifest.setReportee(reportee);
         manifest.setSendersReference(sendersReference);
         return manifest;

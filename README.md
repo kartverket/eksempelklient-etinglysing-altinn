@@ -16,9 +16,9 @@ Byggesystemet kalles via "gradlew" kommando.
 Eksempelvis vil "gradlew tasks" liste ut alle dokumenterte tasker i byggesystemet.
 Se gruppen 'Eksempelklient tasks' for aktuelle tasker.
 
-For kompilering og kjøring av eksempelklient:
+For kompilering og kjøring av eksempelklient der man sender inn en forsendelse til tinglysing:
 
-`$ gradlew assemble runDemo -Daltinn.server=https://tt02.altinn.basefarm.net -Daltinn.serviceCode=4433 -Daltinn.serviceEditionCode=xx -Daltinn.user=xxxx -Daltinn.password=xxxx -Daltinn.reportee=xxxxxxxx -Daltinn.recepient=910976168`
+`$ gradlew assemble demonstrerSendTilTinglysing -Daltinn.server=https://tt02.altinn.basefarm.net -Daltinn.serviceCode=4433 -Daltinn.serviceEditionCode=xx -Daltinn.user=xxxx -Daltinn.password=xxxx -Daltinn.reportee=xxxxxxxx -Daltinn.recepient=910976168`
 
 Beskrivelse av input parametere:
 
@@ -111,10 +111,23 @@ Dokumentasjon av InnsendingService i test: https://etgltest.grunnbok.noo/grunnbo
 For innsendingservice finnes følgende tjenester som fortløpende vil bli støttet:
 
 * `sendTilTinglysing`
-* `valider` (ikke tilgjengelig via Altinn enda), kan validere usignert og signert melding synkront for å se om denne er syntaksmessig og semantisk korrekt utfylt.
-* `hentStatus` (ikke tilgjengelig via Altinn enda), henter nåværende status for en gitt melding, inkludert eventuelle begrunnelser for meldinger som ikke kan tinglyses
+* `valider` kan validere usignert og signert melding synkront for å se om denne er syntaksmessig og semantisk korrekt utfylt.
+* `hentStatus` henter nåværende status for en gitt melding, inkludert eventuelle begrunnelser for meldinger som ikke kan tinglyses
    eller signerte grunnboksutskrifter for meldinger som har tinglyste dokumenter 
 
+For å angi hvilken operasjon i innsendingstjenesten man skal kalle må man legge ved en property i det man initierer oversendelsen som heter 'operation' og sette den til en av disse verdiene: sendTilTinglysing, valider, hentStatus.
+Dette må settes i altinn hvis ikke vil det bli returnert en feil fra Tinglysingen da man ikke vet hvilken operasjon man forsøker å kalle.
+
+Requesten som sendes til InitiateBrokerService må da inneholde en dette:
+        
+        
+        <ns1:PropertyList xmlns:ns1="http://schemas.altinn.no/services/ServiceEngine/Broker/2015/06">                         
+            <ns1:Property>                  
+                <ns1:PropertyKey>operation</ns1:PropertyKey>
+                <ns1:PropertyValue>sendTilTinglysing</ns1:PropertyValue>
+            </ns1:Property>
+        </ns1:PropertyList>
+        
 # Annet
 
 ## Oppsett av systembruker i altinn

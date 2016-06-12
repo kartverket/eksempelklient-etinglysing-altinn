@@ -58,6 +58,7 @@ dependencies {
 
     wsImportWithXJCBinding libraries.jaxws_tools
     wsImportWithXJCBinding libraries.jaxb_xjc
+    wsImportWithXJCBinding libraries.jaxb_jaxb_impl
     wsImportWithXJCBinding libraries.jaxb2_basics_runtime
     wsImportWithXJCBinding libraries.jaxb2_basics
     wsImportWithXJCBinding libraries.jaxb2_basics_tools
@@ -66,6 +67,8 @@ dependencies {
     innsendingService libraries.gbok_innsending
 
     provided libraries.jaxws_rt
+    provided libraries.jaxb_xjc
+    provided libraries.jaxb_jaxb_impl
 
     compile libraries.jodatime
     compile libraries.guava
@@ -93,11 +96,27 @@ tasks.withType(Test) {
     systemProperties = System.getProperties()
 }
 
-task('runDemo', group: 'Eksempelklient', type: JavaExec) {
+task('demonstrerValider', group: 'Eksempelklient', type: JavaExec) {
+    description = 'Demonstrerer validering av pant som blir godkjent og en som blir avvist pga formatfeil'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
+    args = ['valider', '/eksempelfiler/pant.xml', '/eksempelfiler/ugyldig.xml']
+    systemProperties = System.getProperties()
+}
+
+task('demonstrerSendTilTinglysing', group: 'Eksempelklient', type: JavaExec) {
     description = 'Demonstrerer innsending av pant som blir godkjent, blir avvisst pga duplikat forsendelsesreferanse og en som blir avvist pga formatfeil'
     classpath = sourceSets.main.runtimeClasspath
     main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
-    args = ['/eksempelfiler/pant.xml', '/eksempelfiler/pant.xml', '/eksempelfiler/ugyldig.xml']
+    args = ['sendTilTinglysing', '/eksempelfiler/pant.xml', '/eksempelfiler/pant.xml', '/eksempelfiler/ugyldig.xml']
+    systemProperties = System.getProperties()
+}
+
+task('demonstrerHentStatus', group: 'Eksempelklient', type: JavaExec) {
+    description = 'Demonstrerer innsending av pant som blir godkjent, blir avvisst pga duplikat forsendelsesreferanse og en som blir avvist pga formatfeil'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
+    args = ['hentStatus', '/eksempelfiler/hentStatus.xml']
     systemProperties = System.getProperties()
 }
 
@@ -186,8 +205,25 @@ task wsImportInnsendingService(dependsOn: extractInnsendingService) {
     }
 }
 
+task jaxbImportManifest(dependsOn: createGeneratedDir) {
+    def sourceXsd = file("src/main/resources/altinn/BrokerServiceManifest.2015.06.xsd")
+    inputs.file sourceXsd
+    outputs.dir generatedSrcDir
+
+    ant.taskdef(name: 'xjc',
+            classname: 'com.sun.tools.xjc.XJCTask',
+            classpath: configurations.provided.asPath)
+
+    doLast {
+        ant.xjc(schema: sourceXsd, package: 'no.altinn.services.serviceengine.broker',
+                destdir: generatedSrcDir)
+    }
+}
+
+
 compileJava.dependsOn checkJavaVersion
 compileJava.dependsOn(wsImportBrokerServiceExternalBasic)
 compileJava.dependsOn(wsImportBrokerServiceExternalBasicStreamed)
 compileJava.dependsOn(wsImportReceiptExternalBasic)
 compileJava.dependsOn(wsImportInnsendingService)
+compileJava.dependsOn(jaxbImportManifest)

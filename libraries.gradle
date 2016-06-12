@@ -4,6 +4,7 @@ ext.libraries = [
         junit               : 'junit:junit:4.12',
         jaxws_tools         : "com.sun.xml.ws:jaxws-tools:${jaxwsVersion}",
         jaxb_xjc            : "com.sun.xml.bind:jaxb-xjc:2.2.10",
+        jaxb_jaxb_impl      : "com.sun.xml.bind:jaxb-impl:2.2.10",
         jaxws_rt            : "com.sun.xml.ws:jaxws-rt:${jaxwsVersion}",
         jaxb2_basics_runtime: "org.jvnet.jaxb2_commons:jaxb2-basics-runtime:${jaxb2Version}",
         jaxb2_basics        : "org.jvnet.jaxb2_commons:jaxb2-basics:${jaxb2Version}",
