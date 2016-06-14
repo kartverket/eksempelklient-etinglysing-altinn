@@ -80,7 +80,6 @@ dependencies {
     testCompile libraries.junit
     testRuntime libraries.cxf_rt_transports
     testRuntime libraries.gbok_innsending
-    testRuntime libraries.gbok_xslt
 }
 
 task checkJavaVersion << {
