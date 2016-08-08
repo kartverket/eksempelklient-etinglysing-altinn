@@ -15,15 +15,17 @@
 
                         <saksnummer>123</saksnummer>
 
+                        <forvaltere>
+                            <person>
+                                <navn>NORGES BANK</navn>
+                                <identifikasjonsnummer>937884117</identifikasjonsnummer>
+                            </person>
+                        </forvaltere>
+
                         <anmerketPerson>
                             <navn>Per Nordmann</navn>
                             <identifikasjonsnummer>15048000123</identifikasjonsnummer>
                         </anmerketPerson>
-
-                        <konkursbo>
-                            <navn>NORGES BANK</navn>
-                            <identifikasjonsnummer>937884117</identifikasjonsnummer>
-                        </konkursbo>
 
                         <bostyrer>
                             <navn>NORGES BANK</navn>

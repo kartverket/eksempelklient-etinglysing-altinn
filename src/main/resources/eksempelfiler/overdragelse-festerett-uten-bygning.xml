@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
     <forsendelsesreferanse>5</forsendelsesreferanse>
     <usignertMelding>
@@ -44,7 +45,7 @@
                                                 <teller>1</teller>
                                                 <nevner>2</nevner>
                                                 <rettighetshaver>
-                                                    <navn>KjÃ¸pe KjÃ¸pesen</navn>
+                                                    <navn>Kj�pe Kj�pesen</navn>
                                                     <identifikasjonsnummer>15048049689</identifikasjonsnummer>
                                                 </rettighetshaver>
                                             </registerenhetsrettsandel>

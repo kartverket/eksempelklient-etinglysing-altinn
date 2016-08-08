@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
     <forsendelsesreferanse>4</forsendelsesreferanse>
     <usignertMelding>

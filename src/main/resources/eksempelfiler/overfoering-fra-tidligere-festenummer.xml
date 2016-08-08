@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
     <forsendelsesreferanse>6</forsendelsesreferanse>
 
@@ -6,8 +7,8 @@
             <dokument>
                 <dokumentreferanse>1</dokumentreferanse>
                 <rettsstiftelser>
-                    <overfoeringFraTidligereFestenummer>
-                        <rettsstiftelsesreferanse>overfoering.fra.tidligere.festenummer.test</rettsstiftelsesreferanse>
+                    <festenummerGittBruksnummer>
+                        <rettsstiftelsesreferanse>festenummer-gitt-bruksnummer.test</rettsstiftelsesreferanse>
                         <rettsstiftelsestype>
                             <kodeverdi>FB_FGB</kodeverdi>
                             <navn>FESTENUMMER GITT BRUKSNUMMER</navn>
@@ -47,7 +48,7 @@
                             </matrikkelenhet>
                         </til>
                         <omnummereringAvUnderliggende/>
-                    </overfoeringFraTidligereFestenummer>
+                    </festenummerGittBruksnummer>
                 </rettsstiftelser>
             </dokument>
         </dokumenter>

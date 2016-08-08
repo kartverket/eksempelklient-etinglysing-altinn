@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <forsendelse xmlns="http://kartverket.no/grunnbok/wsapi/v2/domain/innsending">
     <forsendelsesreferanse>8</forsendelsesreferanse>
 
@@ -10,7 +11,7 @@
                         <rettsstiftelsesreferanse>matrikkelenhetsendring.test</rettsstiftelsesreferanse>
                         <rettsstiftelsestype>
                             <kodeverdi>SA_SAM</kodeverdi>
-                            <navn>SAMMENSLÃ…ING</navn>
+                            <navn>SAMMENSL�ING</navn>
                         </rettsstiftelsestype>
                         <rekvirenterAvForretning>
                             <person>
