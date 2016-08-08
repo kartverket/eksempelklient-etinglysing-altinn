@@ -99,7 +99,8 @@ Forsendelsestatus vil alltid ha samme sendersReference som den innkommende filen
 Når en fil skal sendes til Kartveket via Altinn så må den pakkes inn i en zip fil før den lastes opp til Altinn. 
 Når Altinn mottar filen så pakkes den ut, og det blir lagt på en fil som heter manifest.xml. Denne filen inneholder informasjon om innholdet i zip filen, eksempelvis hvor mange filer det er og filnavn. 
 Disse to filene blir på nytt lagt i en zip før den blir videresendt til mottaker.
-Kartverket støtter kun innsending av en fil av gangen, dvs hver zip fil skal kun inneholde en forsendelse. Filen som pakkes inn i zip filen skal være en xml fil som inneholder forsendelse på formatet i innsending.xsd.
+Kartverket støtter kun innsending av en fil av gangen, dvs hver zip fil skal kun inneholde en forsendelse. Filen som pakkes inn i zip filen skal være en xml fil som inneholder forsendelse på formatet i innsending.xsd. 
+For forsendelser til Kartverket støttes ISO-8859-1 encoding, Altinn spesifikke ting har UTF-16 encoding.
 
 ![Behandling av zip filer i Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/innhold-zip.png)
 
