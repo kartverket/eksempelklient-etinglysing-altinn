@@ -3,5 +3,5 @@ jdk:
   - oraclejdk8
 branches:
   only:
-    - develop 
+    - release
 script: ./gradlew clean assemble
