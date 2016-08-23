@@ -2,8 +2,6 @@
 
 ![Byggestatus](https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release "Byggestatus")
 
-https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release
-
 # Formål
 Eksempelklient som illustrerer enkelte scenarier av elektronisk tinglysing for eksterne aktører. Formålet med klienten er å demonstrere hvordan formidlingstjenesten i Altinn blir benyttet for å sende inn meldinger til elektronisk tinglysing i Kartverket.
 
