@@ -1,3 +1,9 @@
+# Byggestatus
+
+![Byggestatus](https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release "Byggestatus")
+
+https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release
+
 # Formål
 Eksempelklient som illustrerer enkelte scenarier av elektronisk tinglysing for eksterne aktører. Formålet med klienten er å demonstrere hvordan formidlingstjenesten i Altinn blir benyttet for å sende inn meldinger til elektronisk tinglysing i Kartverket.
 
@@ -54,15 +60,6 @@ i andre byggefiler hvis prosjeket skal bygge feks med maven
            url "https://nexus.grunnbok.no/repository/maven-public/"
         }
     }
-
-Litt avhengig av hvilken javaversjon du kjører så kan det hende at serversertifikatet på nexus.grunnbok.no ikke ligger i cacerts og dette kan føre til følgnde feil:
-
-    sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
-
-Innstaller sertifikatene i stien for nexus.grunnbok.no, disse er lagt inn i `certs/*.cer` og kan installeres slik:
-
-    keytool -import -noprompt -trustcacerts -alias digicertcave -file   c:\workspace\digicert.cer -keystore %JAVA_HOME%\jre\lib\security\cacerts
-    keytool -import -noprompt -trustcacerts -alias digicertcave -file   c:\workspace\digicert-intermediary.cer -keystore %JAVA_HOME%\jre\lib\security\cacerts
 
 Dokumentasjon av Altinn sine tjenester finnes her:
 https://altinnett.brreg.no/no/Sluttbrukersystemer/
