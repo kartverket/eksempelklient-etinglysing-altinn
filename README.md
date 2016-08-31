@@ -10,7 +10,7 @@ Eksempelklient som illustrerer enkelte scenarier av elektronisk tinglysing for e
 JDK installert og konfigurert (JAVA_HOME og PATH). Testet med JDK versjon 8. Git benyttes for utsjekk av kode.
 Gradle benyttes som byggesystem.
 
-Tilgang til å kalle systemet fås ved henvendelse til tinglysingavdelingen. Man må bli lagt inn som bruker hos tinglysingen.
+Tilgang til å kalle systemet fås ved henvendelse til post@grunnbok.no. Man må bli lagt inn som bruker hos tinglysingen.
 I tillegg må man ha en systembruker i Altinn med rettighet til å kalle formidlingstjenesten. For oppsett av systembruker i Altinn, se avsnitt lengre ned.
 
 # Bruk
