@@ -128,7 +128,10 @@ Requesten som sendes til InitiateBrokerService må da inneholde en dette:
 
 ## Oppsett av systembruker i altinn
 
-Hver enkelt sluttbruker må sette opp en systembruker for bruk av formidlingstjenesten i Sluttbrukerløsningen i Altinn. Dette er en forutsetning for at det skal være mulig å sende inn filer via formidlingstjenesten i Altinn. 
+Alle som skal sende inn filer via Altinn til eTinglysing må sette opp en systembruker eller virksomhetsbruker for bruk av formidlingstjenesten i Sluttbrukerløsningen i Altinn. Dette er en forutsetning for at det skal være mulig å sende inn filer via formidlingstjenesten i Altinn. 
+For formidling av forsendelser på vegne av andre organisasjoner så har vi lagt opp til at den organisasjonen som skal formidle filer på vegne av noen andre benytter sitt eget organisasjonsnummer som reportee. Det vil si at de selv setter opp en systembruker eller virksomhetsbruker
+ i Altinn og man har ikke behov for delegering av roller eller rettigheter fra organisasjonen man sender filer på vegne av.
+
 For test får man tildelt en testbruker med tilgang til en fiktiv organisasjon. Link til sluttbrukerløsningen i test: https://tt02.altinn.basefarm.net/
 For å opprette en systembruker gjør følgende:
 
