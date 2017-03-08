@@ -61,16 +61,6 @@
                                         </borettslagsandel>
                                     </registerenhet>
                                 </registerenhetsrett>
-                                <begrensetTil>
-                                    <registerenhetsrettsandel>
-                                        <teller>1</teller>
-                                        <nevner>2</nevner>
-                                        <rettighetshaver>
-                                            <navn>Kari Nordmann</navn>
-                                            <identifikasjonsnummer>15048049688</identifikasjonsnummer>
-                                        </rettighetshaver>
-                                    </registerenhetsrettsandel>
-                                </begrensetTil>
                             </delAvRegisterenhetsrett>
                         </hefterI>
                         <beloep>
@@ -87,10 +77,6 @@
                                 <navn>Ola Nordmann</navn>
                                 <identifikasjonsnummer>15048049769</identifikasjonsnummer>
                             </person>
-                            <person>
-                                <navn>Kari Nordmann</navn>
-                                <identifikasjonsnummer>15048049688</identifikasjonsnummer>
-                            </person>
                         </pantsettere>
                         <erklaeringerOmSivilstand>
                             <erklaeringOmSivilstand>
@@ -98,22 +84,7 @@
                                     <navn>Ola Nordmann</navn>
                                     <identifikasjonsnummer>15048049769</identifikasjonsnummer>
                                 </erklaeringFor>
-                                <kreverSamtykke>true</kreverSamtykke>
-                                <ektefellePartner>
-                                    <navn>Kari Nordmann</navn>
-                                    <identifikasjonsnummer>15048049688</identifikasjonsnummer>
-                                </ektefellePartner>
-                            </erklaeringOmSivilstand>
-                            <erklaeringOmSivilstand>
-                                <erklaeringFor>
-                                    <navn>Kari Nordmann</navn>
-                                    <identifikasjonsnummer>15048049688</identifikasjonsnummer>
-                                </erklaeringFor>
-                                <kreverSamtykke>true</kreverSamtykke>
-                                <ektefellePartner>
-                                    <navn>Ola Nordmann</navn>
-                                    <identifikasjonsnummer>15048049769</identifikasjonsnummer>
-                                </ektefellePartner>
+                                <kreverSamtykke>false</kreverSamtykke>
                             </erklaeringOmSivilstand>
                         </erklaeringerOmSivilstand>
                     </pant>
@@ -135,10 +106,6 @@
         <signatur>
             <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
             <personidentifikasjonsnummer>15048049769</personidentifikasjonsnummer>
-        </signatur>
-        <signatur>
-            <gjelderDokumentreferanse>1</gjelderDokumentreferanse>
-            <personidentifikasjonsnummer>15048049688</personidentifikasjonsnummer>
         </signatur>
     </ikkeDigitaleSignaturer>
 </forsendelse>
