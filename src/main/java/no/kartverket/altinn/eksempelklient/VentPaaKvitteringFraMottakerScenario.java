@@ -38,12 +38,6 @@ public class VentPaaKvitteringFraMottakerScenario {
                     System.out.println(String.format("Mottatt kvittering på at forsendelse med %s mottatt i elektronsik tinglysing: %s", altinnForsendelse.getIdentificationAsString(), receiptFromRecepient.getReceiptText().getValue()));
                     System.out.println("");
                 }
-                if (ReceiptStatusEnum.VALIDATION_FAILED.equals(receiptFromRecepient.getReceiptStatus())) {
-                    altinnForsendelse.setForsendelseRequestStatus(ForsendelseRequestStatus.VALIDATION_FAILED);
-                    //I dette tilfellet vil forsendelseresponse bli sendt tilbake i egen fil
-                    System.out.println(String.format("Mottatt kvittering på at forsendelse med %s mottatt men feilet i elektronsik tinglysing: %s", altinnForsendelse.getIdentificationAsString(), receiptFromRecepient.getReceiptText().getValue()));
-                    System.out.println("");
-                }
                 if (ReceiptStatusEnum.REJECTED.equals(receiptFromRecepient.getReceiptStatus())) {
                     altinnForsendelse.setForsendelseRequestStatus(ForsendelseRequestStatus.FEILET);
                     //Her vil det ikke komme noen filer tilbake fra mottaker

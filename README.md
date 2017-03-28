@@ -77,7 +77,6 @@ Fra Altinn sine tjenester benyttes følgende:
 Innsender laster opp zip fil som inneholder forsendelse og får referanse til en kvittering. Kvitteringen får status OK i det filen er lastet opp til Altinn. For å vite om mottaker har klart å motta filen må innsender følge med på kvitteringsstatus og kvitteringstekst.
 
 * ReceiptStatusEnum.OK og ReceiptText inneholder "Forsendelse mottatt og under behandling" - Mottaker har mottatt filen ok. Etter kvittering med denne statusen vil innsender få tilsendt forsendelsestatus som sier at den er mottatt ok og med innsendingsid, deretter forløpende filer med forsendelsestatus etterhvert som forsendelsen endrer status hos tinglysing.
-* ReceiptStatusEnum.VALIDATION_FAILED - Forsendelsen feilet i mottak. Etter kvittering med denne statusen vil innsender få tilsendt en fil som inneholder forsendelsestatus med feilmelding.
 * ReceiptStatusEnum.REJECTED - tinglysing klarte ikke å ta i mot filen, feilmelding gitt i kvittering. Innsender vil ikke tilsendt statusendringer på denne filen. 
 
 ![Innsending av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/altinn-opplasting.png)
