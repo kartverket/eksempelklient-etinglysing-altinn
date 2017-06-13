@@ -26,7 +26,7 @@ For kompilering og kjøring av eksempelklient der man sender inn en forsendelse 
 
 Beskrivelse av input parametere:
 
-* altinn.server = angir server adresse for Altinn formidlingstjenesten, for test benyttes https://tt02.altinn.basefarm.net
+* altinn.server = angir server adresse for Altinn formidlingstjenesten, for test benyttes https://tt02.altinn.no
 * altinn.serviceCode/altinn.serviceEditionCode angir utgave av Kartverket sin tjeneste
 * altinn.user/altinn.password må settes opp av innsender selv i Altinn sluttbruker løsning, se avsnitt lengre ned
 * altinn.reportee - organisasjonsnummer for innsender, for test får man tildelt et fiktivt organisasjonsnummer
