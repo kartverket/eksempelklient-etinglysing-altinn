@@ -18,9 +18,9 @@ public class AltinnEksempelKlient {
 
     /**
      * Konfigureres via
-     * {@code -Daltinn.server=https://tt02.altinn.basefarm.net -Daltinn.serviceCode=4433 -Daltinn.serviceEditionCode=xx -Daltinn.user=xxxx -Daltinn.password=xxxx -Daltinn.reportee=123456789 -Daltinn.recepient=910976168 }
+     * {@code -Daltinn.server=https://tt02.altinn.no -Daltinn.serviceCode=4433 -Daltinn.serviceEditionCode=xx -Daltinn.user=xxxx -Daltinn.password=xxxx -Daltinn.reportee=123456789 -Daltinn.recepient=910976168 }
      *
-     * altinn.server = angir server adresse for altinn formidlingstjenesten, for test benyttes https://tt02.altinn.basefarm.net
+     * altinn.server = angir server adresse for altinn formidlingstjenesten, for test benyttes https://tt02.altinn.no
      * altinn.serviceCode/altinn.serviceEditionCode refererer til hvilken utgave av Kartverket sin tjeneste man skal gå mot
      * altinn.user/altinn.password må settes opp av sluttbruker selv i Altinn sluttbruker løsning for formidlingstjenesten
      * altinn.reportee - organisasjonsnummer for innsender, for test får man tildelt et fiktivt organisasjonsnummer
