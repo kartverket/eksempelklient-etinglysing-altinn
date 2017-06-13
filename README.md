@@ -3,10 +3,12 @@
 ![Byggestatus](https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release "Byggestatus")
 
 # Formål
+
 Eksempelklient som illustrerer enkelte scenarier av elektronisk tinglysing for eksterne aktører. Formålet med klienten er å demonstrere hvordan formidlingstjenesten i Altinn blir benyttet for å sende inn meldinger til elektronisk tinglysing i Kartverket.
 
 
 # Forutsetninger
+
 JDK installert og konfigurert (JAVA_HOME og PATH). Testet med JDK versjon 8. Git benyttes for utsjekk av kode.
 Gradle benyttes som byggesystem.
 
@@ -14,6 +16,7 @@ Tilgang til å kalle systemet fås ved henvendelse til post@grunnbok.no. Man må
 I tillegg må man ha en systembruker i Altinn med rettighet til å kalle formidlingstjenesten. For oppsett av systembruker i Altinn, se avsnitt lengre ned.
 
 # Bruk
+
 Klone git repository til lokalt repo.
 
 Byggesystemet kalles via "gradlew" kommando.
@@ -36,19 +39,22 @@ Alternativt til angivelse av system properties på kommandolinjen (via -D) så k
 Se filen 'gradle.properties' for setting av parametere.
 
 # IDE
+
 Prosjektet kan f.eks. lastes inn i Jetbrains IntelliJ IDEA ved å importere gradle prosjektet.
 IntelliJ finnes som gratisversjon (Community Edition) og kan lastes ned via https://www.jetbrains.com/idea/download/
 Andre IDEs kan også benyttes, f.eks. Eclipse, men dette har ikke blitt testet.
 
 # Testscenarier i eksempelklienten
-Eksempelet inneholder innsending av tre filer til tinglysing. Først en pant, deretter en duplikat melding med samme innhold og tilslutt innsending av en ikke gyldig xml. Legg merke til at for at eksemplene skal kjøre hensiktsmessig må matrikkelenheter og personer finnes i det miljøet man sender inn filer til.
+
+Eksempelet inneholder innsending av tre filer til tinglysing. Først et pant, deretter en duplikat melding med samme innhold og tilslutt innsending av en ikke gyldig xml. Legg merke til at for at eksemplene skal kjøre hensiktsmessig må matrikkelenheter og personer finnes i det miljøet man sender inn filer til.
 Den første filen vil bli sendt inn og godkjent, den andre vil bli avvist i mottak pga duplikat foresendelsereferanse og den siste vil bli avvist pga feil i format. Alle filer blir først sendt inn, deretter venter man på at kvittering skal bli tilgjengelig for alle filene.
 Tilslutt venter man på statusoppdateringer for filene som har blitt sendt inn helt til eksempelklienten stenges. Legg merke til at for test blir det benyttet fiktive data i for Altinn spesifikke ting, mens innholdet som skal mottas av Kartverket benytter reelle data. 
 
 I katalogen 'src/main/resources/eksempelfiler' finnes også en rekke eksempler på andre type forsendelser.
 
 # Eksterne grensesnitt
-Eksempelet inneholder gjeldende versjon av WSDL-er og skjema-filer for Altinn formidlings tjenester. I tillegg er det en avhengighet til en artifakt som inneholder Kartverkets WSDL-er og skjema-filer for InnsendingsService. 
+
+Eksempelet inneholder gjeldende versjon av WSDL-er og skjema-filer for Altinn formidlingstjenester. I tillegg er det en avhengighet til en artifakt som inneholder Kartverkets WSDL-er og skjema-filer for InnsendingsService. 
 Denne artefakten er hostet i kartverket sitt eksterne nexus repository. Dette er definert i byggefilen. Tilsvarende må legges inn 
 i andre byggefiler hvis prosjeket skal bygge feks med maven
 
@@ -63,6 +69,7 @@ Dokumentasjon av Altinn sine tjenester finnes her:
 https://altinnett.brreg.no/no/Sluttbrukersystemer/
 
 ## Grensesnitt mot Altinn sin formidlingstjeneste
+
 Fra Altinn sine tjenester benyttes følgende:
 
 * Initiering av innsending: BrokerService.initiateBrokerServiceBasic
@@ -77,11 +84,15 @@ Fra Altinn sine tjenester benyttes følgende:
 Innsender laster opp zip fil som inneholder forsendelse og får referanse til en kvittering. Kvitteringen får status OK i det filen er lastet opp til Altinn. For å vite om mottaker har klart å motta filen må innsender følge med på kvitteringsstatus og kvitteringstekst.
 
 * ReceiptStatusEnum.OK og ReceiptText inneholder "Forsendelse mottatt og under behandling" - Mottaker har mottatt filen ok. Etter kvittering med denne statusen vil innsender få tilsendt forsendelsestatus som sier at den er mottatt ok og med innsendingsid, deretter forløpende filer med forsendelsestatus etterhvert som forsendelsen endrer status hos tinglysing.
-* ReceiptStatusEnum.REJECTED - tinglysing klarte ikke å ta i mot filen, feilmelding gitt i kvittering. Innsender vil ikke tilsendt statusendringer på denne filen. 
+* ReceiptStatusEnum.REJECTED - Tinglysing klarte ikke å ta i mot filen, feilmelding gitt i kvittering. Innsender vil ikke tilsendt statusendringer på denne filen. Man vil kun få REJECTED dersom det er noe teknisk feil som forhindrer innlesing av innhold, dette kan være:
+  * Korrupt zip-fil
+  * Ikke gyldig zip-fil (Annen filtype)
+  * Ukjent teknisk feil (skal ikke forekomme, og bør rapporteres med feilmelding og/eller feilId dersom dette er oppgitt)
 
 ![Innsending av fil via Altinn formidlingstjeneste](https://raw.githubusercontent.com/kartverket/eksempelklient-etinglysing-altinn/release/doc/altinn-opplasting.png)
 
-### Nedlasting av tinglyingstatus
+### Nedlasting av tinglysingstatus
+
 Innsender sjekker om det har kommet statusoppdatering på noen av forsendelsene man har sendt inn til Altinn ved å sjekke om det har kommet noen nye filer. Dersom det har kommet en forsendelsestatus vil man kunne matche dette mot innsendt forsendelse ved at de vil ha samme forsendelsereferanse. 
 Dersom filen av en eller annen grunn ikke inneholder forsendelsereferanse må man koble tinglysingstatus til innsendt forsendelse gjennom sendersReference.
 Forsendelsestatus vil alltid ha samme sendersReference som den innkommende filen. Her er det imidlertid ingen duplikat sjekk, innsender må derfor selv sørge for at denne er unik for hver innsendte fil dersom man skal kunne matche mottatte filer uten forsendelsesreferanse mot filer man har sendt fra seg. 
@@ -102,6 +113,7 @@ På samme måte som forsendelse som skal sendes inn til tinglysing pakkes inn i 
 Responsen fra Kartverket vil alltid kun inneholde en forsendelsesstatus i hver fil.
 
 ## Grensesnitt mot Kartverkets innsendingsservice
+
 Dokumentasjon av InnsendingService i test: https://etgltest.grunnbok.noo/grunnbok/index.jsp
 For innsendingservice finnes følgende tjenester som fortløpende vil bli støttet:
 
@@ -113,7 +125,7 @@ For innsendingservice finnes følgende tjenester som fortløpende vil bli støtt
 For å angi hvilken operasjon i innsendingstjenesten man skal kalle må man legge ved en property i det man initierer oversendelsen som heter 'operation' og sette den til en av disse verdiene: sendTilTinglysing, valider, hentStatus.
 Dette må settes i altinn hvis ikke vil det bli returnert en feil fra Tinglysingen da man ikke vet hvilken operasjon man forsøker å kalle.
 
-Requesten som sendes til InitiateBrokerService må da inneholde en dette:
+Requesten som sendes til InitiateBrokerService må da inneholde dette:
         
         
         <ns1:PropertyList xmlns:ns1="http://schemas.altinn.no/services/ServiceEngine/Broker/2015/06">                         
@@ -131,7 +143,7 @@ Alle som skal sende inn filer via Altinn til eTinglysing må sette opp en system
 For formidling av forsendelser på vegne av andre organisasjoner så har vi lagt opp til at den organisasjonen som skal formidle filer på vegne av noen andre benytter sitt eget organisasjonsnummer som reportee. Det vil si at de selv setter opp en systembruker eller virksomhetsbruker
  i Altinn og man har ikke behov for delegering av roller eller rettigheter fra organisasjonen man sender filer på vegne av. Det kreves rollen utfyller/innsender for brukeren som skal få opprettet systembruker eller at man får delegert en enkeltrettighet til tjenesten.
 
-For test får man tildelt en testbruker med tilgang til en fiktiv organisasjon. Link til sluttbrukerløsningen i test: https://tt02.altinn.basefarm.net/
+For test får man tildelt en testbruker med tilgang til en fiktiv organisasjon. Link til sluttbrukerløsningen i test: https://tt02.altinn.no/
 For å opprette en systembruker gjør følgende:
 
 * Logg inn med en bruker med tilgang til organisasjonen du skal opprette systembruker for. Velg å representere organisasjonen.
