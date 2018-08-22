@@ -1588,7 +1588,7 @@
     </wsdl:binding>
     <wsdl:service name="ReceiptExternalBasicSF">
         <wsdl:port name="BasicHttpBinding_IReceiptExternalBasic" binding="tns:BasicHttpBinding_IReceiptExternalBasic">
-            <soap:address location="http://tt02.altinn.basefarm.net/IntermediaryExternal/ReceiptExternalBasic.svc"/>
+            <soap:address location="http://tt02.altinn.no/IntermediaryExternal/ReceiptExternalBasic.svc"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

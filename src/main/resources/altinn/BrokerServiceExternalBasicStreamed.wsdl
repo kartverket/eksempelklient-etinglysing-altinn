@@ -340,7 +340,7 @@
     </wsdl:binding>
     <wsdl:service name="BrokerServiceExternalBasicStreamedSF">
         <wsdl:port name="BasicHttpBinding_IBrokerServiceExternalBasicStreamed" binding="tns:BasicHttpBinding_IBrokerServiceExternalBasicStreamed">
-            <soap:address location="http://tt02.altinn.basefarm.net/ServiceEngineExternal/BrokerServiceExternalBasicStreamed.svc"/>
+            <soap:address location="http://tt02.altinn.no/ServiceEngineExternal/BrokerServiceExternalBasicStreamed.svc"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
