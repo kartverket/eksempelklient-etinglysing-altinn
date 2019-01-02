@@ -114,7 +114,7 @@ Responsen fra Kartverket vil alltid kun inneholde en forsendelsesstatus i hver f
 
 ## Grensesnitt mot Kartverkets innsendingsservice
 
-Dokumentasjon av InnsendingService i test: https://etgltest.grunnbok.noo/grunnbok/index.jsp
+Dokumentasjon av InnsendingService i test: https://etgltest.grunnbok.no/grunnbok/index.jsp
 For innsendingservice finnes følgende tjenester som fortløpende vil bli støttet:
 
 * `sendTilTinglysing`
