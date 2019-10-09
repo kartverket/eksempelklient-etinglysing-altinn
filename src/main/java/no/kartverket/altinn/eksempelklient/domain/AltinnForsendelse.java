@@ -19,19 +19,17 @@ import java.util.List;
 
 public class AltinnForsendelse {
 
-    private no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus forsendelseRequestStatus;
+    private final Logger log = LoggerFactory.getLogger(AltinnForsendelse.class);
     private final String fileName;
     private final InnsendingOperation operation;
     private final byte[] forsendelsePayload;
     private final List<AltinnForsendelseResponse> responses = new ArrayList<>();
-    private final Logger log = LoggerFactory.getLogger(AltinnForsendelse.class);
+    private final AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation(); //Altinn referanser
 
-    //referanse satt av innsender i forsendelsePayload, unik pr forsendelse
+    // Referanse satt av innsender i forsendelsePayload, unik pr forsendelse
     private String forsendelsereferanse;
     private String innsendingsId;
-
-    //Altinn referanser
-    private final AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation();
+    private ForsendelseRequestStatus forsendelseRequestStatus;
 
     public AltinnForsendelse(String filename, String sendersReference, InnsendingOperation operation) {
         this.fileName = filename;
@@ -69,7 +67,7 @@ public class AltinnForsendelse {
             Forsendelse forsendelse = unmarshalledObject.getValue();
             return forsendelse.getForsendelsesreferanse();
         } catch (JAXBException e) {
-            System.out.println("ERROR: Kunne ikke hente ut forsendelsereferanse fra forsendelse payload for fil: " + fileName);
+            log.error("Kunne ikke hente ut forsendelsereferanse fra forsendelse payload for fil: {}", fileName);
             return null;
         }
     }
@@ -119,11 +117,11 @@ public class AltinnForsendelse {
         return altinnTrackerInformation;
     }
 
-    public no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus getForsendelseRequestStatus() {
+    public ForsendelseRequestStatus getForsendelseRequestStatus() {
         return forsendelseRequestStatus;
     }
 
-    public void setForsendelseRequestStatus(no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus forsendelseRequestStatus) {
+    public void setForsendelseRequestStatus(ForsendelseRequestStatus forsendelseRequestStatus) {
         this.forsendelseRequestStatus = forsendelseRequestStatus;
     }
 
