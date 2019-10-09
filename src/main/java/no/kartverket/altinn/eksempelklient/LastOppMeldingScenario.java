@@ -2,6 +2,7 @@ package no.kartverket.altinn.eksempelklient;
 
 import no.altinn.services.streamed.IBrokerServiceExternalBasicStreamedUploadFileStreamedBasicAltinnFaultFaultFaultMessage;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
+import no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus;
 import no.kartverket.altinn.eksempelklient.service.AltinnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +33,9 @@ public class LastOppMeldingScenario {
             Integer receiptId = altinnService.uploadFileToAltinn(altinnForsendelse, reportee);
             log.info("Fil med filreferanse: {} og kvitteringsid: {} lastet opp til Altinn for {}", altinnForsendelse.getAltinnTrackerInformation().getFileReference(), receiptId, altinnForsendelse.getOperation());
             altinnForsendelse.getAltinnTrackerInformation().setReceiptId(receiptId);
-            altinnForsendelse.setForsendelseRequestStatus(AltinnForsendelse.ForsendelseRequestStatus.SENT);
+            altinnForsendelse.setForsendelseRequestStatus(ForsendelseRequestStatus.SENT);
         } catch (IBrokerServiceExternalBasicStreamedUploadFileStreamedBasicAltinnFaultFaultFaultMessage message) {
-            altinnForsendelse.setForsendelseRequestStatus(AltinnForsendelse.ForsendelseRequestStatus.FEILET);
+            altinnForsendelse.setForsendelseRequestStatus(ForsendelseRequestStatus.FEILET);
             throw new RuntimeException("ERROR: Feil ved opplasting av fil til Altinn", message);
         }
     }

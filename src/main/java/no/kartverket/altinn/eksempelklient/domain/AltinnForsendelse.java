@@ -18,9 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AltinnForsendelse {
-    public enum ForsendelseRequestStatus {SENT, UPLOADED_OK, MOTTATT, VALIDATION_FAILED, FEILET}
 
-    private ForsendelseRequestStatus forsendelseRequestStatus;
+    private no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus forsendelseRequestStatus;
     private final String fileName;
     private final InnsendingOperation operation;
     private final byte[] forsendelsePayload;
@@ -120,11 +119,11 @@ public class AltinnForsendelse {
         return altinnTrackerInformation;
     }
 
-    public ForsendelseRequestStatus getForsendelseRequestStatus() {
+    public no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus getForsendelseRequestStatus() {
         return forsendelseRequestStatus;
     }
 
-    public void setForsendelseRequestStatus(ForsendelseRequestStatus forsendelseRequestStatus) {
+    public void setForsendelseRequestStatus(no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus forsendelseRequestStatus) {
         this.forsendelseRequestStatus = forsendelseRequestStatus;
     }
 

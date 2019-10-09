@@ -3,6 +3,7 @@ package no.kartverket.altinn.eksempelklient;
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptStatusEnum;
 import no.altinn.schemas.services.intermediary.receipt._2015._06.Receipt;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
+import no.kartverket.altinn.eksempelklient.domain.ForsendelseRequestStatus;
 import no.kartverket.altinn.eksempelklient.service.AltinnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkState;
-import static no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse.ForsendelseRequestStatus;
 
 public class VentPaaKvitteringFraMottakerScenario {
 
