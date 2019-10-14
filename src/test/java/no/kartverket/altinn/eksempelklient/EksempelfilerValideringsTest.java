@@ -38,7 +38,7 @@ public class EksempelfilerValideringsTest {
                 log.info("Validerer {}", file.getName());
                 try {
                     boolean validationOk = validate(file);
-                    if(!validationOk) {
+                    if (!validationOk) {
                         validationFailures.add(file.getName());
                     }
                 } catch (SAXException e) {
@@ -58,7 +58,7 @@ public class EksempelfilerValideringsTest {
 
 
     private boolean validate(File requestFile) throws SAXException, IOException {
-        Source schemaSource= new StreamSource(getClass().getResourceAsStream("/innsending.xsd"));
+        Source schemaSource = new StreamSource(getClass().getResourceAsStream("/innsending.xsd"));
         Source xmlFile = new StreamSource(requestFile);
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(schemaSource);

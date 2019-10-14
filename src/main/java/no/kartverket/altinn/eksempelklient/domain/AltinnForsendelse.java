@@ -26,7 +26,7 @@ public class AltinnForsendelse {
     private final List<AltinnForsendelseResponse> responses = new ArrayList<>();
     private final AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation(); //Altinn referanser
 
-    // Referanse satt av innsender i forsendelsePayload, unik pr forsendelse
+    // Referanse satt av innsender i forsendelsePayload, unik pr. forsendelse
     private String forsendelsereferanse;
     private String innsendingsId;
     private ForsendelseRequestStatus forsendelseRequestStatus;

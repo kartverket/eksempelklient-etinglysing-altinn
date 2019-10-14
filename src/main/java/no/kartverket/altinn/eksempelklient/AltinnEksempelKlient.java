@@ -44,7 +44,7 @@ public class AltinnEksempelKlient {
 
         InnsendingOperation operation = getOperation(args[0]);
 
-        //Scenario 1: Last opp filer til Altinn
+        // Scenario 1: Last opp filer til Altinn
         List<AltinnForsendelse> altinnForsendelser = new ArrayList<>();
         for (int i = 1; i < args.length; i++) {
             String inputfil = args[i];
@@ -54,14 +54,14 @@ public class AltinnEksempelKlient {
         LastOppMeldingScenario lastOppMeldingScenario = new LastOppMeldingScenario(altinnService, parameters.getReportee(), parameters.getRecepient());
         altinnForsendelser.forEach(lastOppMeldingScenario::execute);
 
-        //Scenario 2: Hent kvitteringer for innsendte filer
+        // Scenario 2: Hent kvitteringer for innsendte filer
         VentPaaKvitteringFraMottakerScenario ventPaaKvitteringFraMottakerScenario = new VentPaaKvitteringFraMottakerScenario(altinnService);
         altinnForsendelser.forEach(ventPaaKvitteringFraMottakerScenario::execute);
 
-        //Scenario 3: Last ned fil fra Altinn hvis innsending gikk ok
+        // Scenario 3: Last ned fil fra Altinn hvis innsending gikk ok
         LastNedTilgjengeligeFilerScenario lastNedTilgjengeligeFilerScenario = new LastNedTilgjengeligeFilerScenario(altinnService, parameters.getReportee());
 
-        //Lar denne stå å lytte på innsendte filer til vi stopper klienten.
+        // Lar denne stå å lytte på innsendte filer til vi stopper klienten.
         while (true) {
             lastNedTilgjengeligeFilerScenario.execute(altinnForsendelser);
             log.info("Venter {} milisekunder før neste forespørsel mot Altinn", POLL_INTERVAL_MILLIS);

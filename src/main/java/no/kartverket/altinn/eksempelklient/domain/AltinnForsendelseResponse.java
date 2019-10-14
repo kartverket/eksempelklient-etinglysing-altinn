@@ -9,6 +9,8 @@ import no.kartverket.grunnbok.wsapi.v2.domain.innsending.Forsendelsesstatus;
 import no.kartverket.grunnbok.wsapi.v2.domain.innsending.Kontrollresultat;
 import no.kartverket.grunnbok.wsapi.v2.domain.innsending.ObjectFactory;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -20,32 +22,32 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseResponse>{
+public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseResponse> {
 
-    private final String operationPropertyKey = "operation";
+    private static final String operationPropertyKey = "operation";
 
-    private byte [] zipPayload;
+    private final Logger log = LoggerFactory.getLogger(AltinnForsendelseResponse.class);
+    private final AltinnTrackerInformation altinnTrackerInformation;
 
-    //setter disse verdiene etter å ha pakket ut zipfilen
     private String fileName;
-    private byte [] forsendelseResponsePayload;
-    private byte [] manifestPayload;
     private Forsendelsesstatus forsendelsesstatus;
     private InnsendingOperation innsendingOperation;
+    private byte[] zipPayload;
+    private byte[] forsendelseResponsePayload;
+    private byte[] manifestPayload;
 
-    private final AltinnTrackerInformation altinnTrackerInformation;
 
     public AltinnForsendelseResponse(AltinnTrackerInformation altinnTrackerInformation) {
         this.altinnTrackerInformation = altinnTrackerInformation;
     }
 
     public void extractResponseFromZip(byte[] zipPayload) {
-        this.zipPayload = zipPayload;
         AltinnFileExtractor altinnFileExtractor = new AltinnFileExtractor(altinnInbound(new ByteArrayInputStream(zipPayload)));
         this.fileName = altinnFileExtractor.getName();
-        this.forsendelseResponsePayload= altinnFileExtractor.getTargetRaw();
+        this.forsendelseResponsePayload = altinnFileExtractor.getTargetRaw();
+        this.zipPayload = zipPayload;
+        this.manifestPayload = altinnFileExtractor.getManifestTargetRaw();
         forsendelsesstatus = extractForsendelsestatusFraPayload();
-        this.manifestPayload= altinnFileExtractor.getManifestTargetRaw();
         innsendingOperation = extractInnsendingOperationFraManifestPayload();
 
     }
@@ -54,7 +56,7 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
         try {
             File tempDir = Files.createTempDirectory("").toFile();
             final File inbound = Files.createTempFile(tempDir.toPath(), "", "").toFile();
-            try(OutputStream out = new FileOutputStream(inbound)) {
+            try (OutputStream out = new FileOutputStream(inbound)) {
                 ByteStreams.copy(in, out);
                 return inbound;
             }
@@ -68,11 +70,10 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            @SuppressWarnings("unused")
             JAXBElement<Forsendelsesstatus> unmarshalledObject = (JAXBElement<Forsendelsesstatus>) unmarshaller.unmarshal(new ByteArrayInputStream(forsendelseResponsePayload));
             return unmarshalledObject.getValue();
         } catch (JAXBException e) {
-            System.out.println("ERROR: Kunne ikke hente ut forsendelsestatus fra forsendelse response for fil med filreferanse: " + altinnTrackerInformation.getFileReference());
+            log.error("Kunne ikke hente ut forsendelsestatus fra forsendelse response for fil med filreferanse: {}", altinnTrackerInformation.getFileReference());
             e.printStackTrace();
             return null;
         }
@@ -84,35 +85,35 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
             JAXBContext jaxbContext = JAXBContext.newInstance(no.altinn.services.serviceengine.broker.ObjectFactory.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             @SuppressWarnings("unused")
-            BrokerServiceManifest brokerServiceManifest= (BrokerServiceManifest) unmarshaller.unmarshal(new ByteArrayInputStream(manifestPayload));
+            BrokerServiceManifest brokerServiceManifest = (BrokerServiceManifest) unmarshaller.unmarshal(new ByteArrayInputStream(manifestPayload));
             return getOperation(brokerServiceManifest);
         } catch (JAXBException e) {
-            System.out.println(String.format("ERROR: Kunne ikke hente ut innsendingOperation fra forsendelse response for fil med filreferanse: %s", altinnTrackerInformation.getFileReference()));
+            log.error("Kunne ikke hente ut innsendingOperation fra forsendelse response for fil med filreferanse: {}", altinnTrackerInformation.getFileReference());
             e.printStackTrace();
             return null;
         }
     }
 
     private InnsendingOperation getOperation(BrokerServiceManifest brokerServiceManifest) {
-        if(brokerServiceManifest!=null && brokerServiceManifest.getPropertyList()!=null && brokerServiceManifest.getPropertyList().getProperty()!=null) {
+        if (brokerServiceManifest != null && brokerServiceManifest.getPropertyList() != null && brokerServiceManifest.getPropertyList().getProperty() != null) {
             List<BrokerServiceManifest.PropertyList.Property> properties = brokerServiceManifest.getPropertyList().getProperty();
             for (BrokerServiceManifest.PropertyList.Property property : properties) {
                 if (operationPropertyKey.equals(property.getPropertyKey())) {
                     String operationAsString = property.getPropertyValue();
-                    System.out.println("Response inneholder manifest.xml med operation = " + operationAsString);
+                    log.info("Response inneholder manifest.xml med operation = {}", operationAsString);
                     return InnsendingOperation.valueOf(operationAsString);
                 }
             }
         }
-        System.out.println("Response mangler property for operation i manifest.xml");
+        log.info("Response mangler property for operation i manifest.xml");
         return null;
     }
 
     public boolean erSvarPaa(AltinnForsendelse forsendelse) {
-        if(innsendingOperation!=null && !innsendingOperation.equals(forsendelse.getOperation())) {
+        if (innsendingOperation != null && !innsendingOperation.equals(forsendelse.getOperation())) {
             return false;
         }
-        if(InnsendingOperation.hentStatus.equals(forsendelse.getOperation())) {
+        if (InnsendingOperation.hentStatus.equals(forsendelse.getOperation())) {
             return forsendelse.getInnsendingsId() != null && forsendelse.getInnsendingsId().equals(getInnsendingsId());
         } else {
             return forsendelse.getForsendelsereferanse() != null && forsendelse.getForsendelsereferanse().equals(getForsendelsereferanse());
@@ -132,11 +133,11 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
     }
 
     public String getForsendelsereferanse() {
-        return forsendelsesstatus!=null?forsendelsesstatus.getForsendelsesreferanse():null;
+        return forsendelsesstatus != null ? forsendelsesstatus.getForsendelsesreferanse() : null;
     }
 
     private String getInnsendingsId() {
-        return forsendelsesstatus!=null?forsendelsesstatus.getInnsendingId():null;
+        return forsendelsesstatus != null ? forsendelsesstatus.getInnsendingId() : null;
     }
 
     public AltinnTrackerInformation getAltinnTrackerInformation() {
@@ -144,12 +145,17 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
     }
 
     public void printForsendelsestatus() {
-        if(forsendelsesstatus==null) {
-            System.out.println("Response inneholder ingen forsendelsestatus");
-            System.out.println("");
+        if (forsendelsesstatus == null) {
+            log.info("Response inneholder ingen forsendelsestatus");
             return;
         }
-        System.out.println(forsendelsesstatus.getForsendelsesreferanse()!=null ?"Oppsummering av forsendelsestatus med forsendelsereferanse: "+ forsendelsesstatus.getForsendelsesreferanse(): "Mottok forsendelsestatus uten forsendelsereferanse");
+
+        if (forsendelsesstatus.getForsendelsesreferanse() != null)
+            log.info("Oppsummering av forsendelsestatus med forsendelsereferanse: {}", forsendelsesstatus.getForsendelsesreferanse());
+        else {
+            log.info("Mottok forsendelsestatus uten forsendelsereferanse");
+        }
+
         switch (innsendingOperation) {
             case sendTilTinglysing:
                 printForsendelsestatusSendTilTinglysing();
@@ -161,64 +167,73 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
                 printForsendelsestatusValider();
                 break;
             default:
-                System.out.println("   Payload response: " + new String (getForsendelseResponsePayload()));
+                log.info("   Payload response: {}", new String(getForsendelseResponsePayload()));
         }
     }
 
 
     private void printForsendelsestatusValider() {
-        if(forsendelsesstatus.getBehandlingsinformasjon() == null || forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() == null) {
-            System.out.println("   Resultat: Validering OK");
-        } else if (forsendelsesstatus.getBehandlingsinformasjon()!=null &&  forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() !=null
-                &&forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat()!=null) {
-            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().stream().forEach(this::printKontrollresultat);
-            System.out.println("");
+        if (forsendelsesstatus.getBehandlingsinformasjon() == null || forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() == null) {
+            log.info("   Resultat: Validering OK");
+        } else if (forsendelsesstatus.getBehandlingsinformasjon() != null && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() != null
+                && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat() != null) {
+            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().forEach(this::printKontrollresultat);
         } else {
             System.out.println("   Ukjent tolkning av resultat " + new String(forsendelseResponsePayload));
         }
     }
 
     public void printForsendelsestatusSendTilTinglysing() {
-        System.out.println("Innsendingsid: " + forsendelsesstatus.getInnsendingId());
-        System.out.println(getPrioriteringstidspunktOgStatusAsString());
-        //Forventer å ha behandlingsinformasjon med kontroll resultater dersom behandlingsutfall er UAVKLART, FORELOEPIG_NEKTET; ANKET ELLER AVVIST
-        if(forsendelsesstatus.getBehandlingsinformasjon()!=null && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater()!=null) {
-            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().stream().forEach(this::printKontrollresultat);
+        log.info("Innsendingsid: {}", forsendelsesstatus.getInnsendingId());
+        log.info(getPrioriteringstidspunktOgStatusAsString());
+
+        // Forventer å ha behandlingsinformasjon med kontroll resultater dersom behandlingsutfall er UAVKLART, FORELOEPIG_NEKTET; ANKET ELLER AVVIST
+        if (forsendelsesstatus.getBehandlingsinformasjon() != null && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() != null) {
+            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().forEach(this::printKontrollresultat);
         }
-        System.out.println("");
     }
 
     public void printForsendelsestatusHentStatus() {
-        if(forsendelsesstatus.getInnsendingId()==null) {
-            System.out.println("Fant ikke forsendelse for gitt innsendingsid");
+        if (forsendelsesstatus.getInnsendingId() == null) {
+            log.info("Fant ikke forsendelse for gitt innsendingsid");
         } else {
-            System.out.println("Innsendingsid: " + forsendelsesstatus.getInnsendingId());
+            log.info("Innsendingsid: {}", forsendelsesstatus.getInnsendingId());
         }
-        System.out.println("Prioriteringstidspunkt: "+forsendelsesstatus.getRegistreringstidspunkt() + ", Behandlingsutfall: "+forsendelsesstatus.getBehandlingsutfall() + ", Saksstatus: " + forsendelsesstatus.getSaksstatus());
-        if(forsendelsesstatus.getBehandlingsinformasjon()!=null && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater()!=null) {
-            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().stream().forEach(this::printKontrollresultat);
+
+        log.info("Prioriteringstidspunkt: {}", forsendelsesstatus.getRegistreringstidspunkt());
+        log.info("Behandlingsutfall: {}", forsendelsesstatus.getBehandlingsutfall());
+        log.info("Saksstatus: {}", forsendelsesstatus.getSaksstatus());
+
+        if (forsendelsesstatus.getBehandlingsinformasjon() != null && forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater() != null) {
+            forsendelsesstatus.getBehandlingsinformasjon().getKontrollresultater().getKontrollresultat().forEach(this::printKontrollresultat);
         }
-        System.out.println("");
     }
 
     private void printKontrollresultat(Kontrollresultat kontrollresultat) {
         StringBuilder stringBuilder = new StringBuilder("   Kontrollresultat ");
-        if(kontrollresultat.getDokumentindeks()!=null) {
-            stringBuilder.append("for dokumentindeks ").append(kontrollresultat.getDokumentindeks())
-                    .append(" og rettstiftelsesindeks ").append(kontrollresultat.getRettsstiftelsesindeks()).append(":");
+        if (kontrollresultat.getDokumentindeks() != null) {
+            stringBuilder
+                    .append("for dokumentindeks ")
+                    .append(kontrollresultat.getDokumentindeks())
+                    .append(" og rettstiftelsesindeks ")
+                    .append(kontrollresultat.getRettsstiftelsesindeks()).append(":");
         }
-        stringBuilder.append(kontrollresultat.getNavn()).append(", utfall: ").append(kontrollresultat.getUtfall());
-        System.out.println(stringBuilder.toString());
-        kontrollresultat.getBegrunnelser().getBegrunnelse().stream().forEach(this::printBegrunnelser);
+
+        stringBuilder
+                .append(kontrollresultat.getNavn())
+                .append(", utfall: ")
+                .append(kontrollresultat.getUtfall());
+        log.info(stringBuilder.toString());
+        kontrollresultat.getBegrunnelser().getBegrunnelse().forEach(this::printBegrunnelser);
     }
 
     private void printBegrunnelser(Begrunnelse begrunnelse) {
-        System.out.println("        Begrunnelse: "+begrunnelse.getTekst() +" ("+ begrunnelse.getElementnavn() + ")");
+        log.info("        Begrunnelse: " + begrunnelse.getTekst() + " (" + begrunnelse.getElementnavn() + ")");
     }
 
 
     public DateTime getPrioriteringstidspunkt() {
-        if(forsendelsesstatus!=null && forsendelsesstatus.getRegistreringstidspunkt()!=null) {
+        if (forsendelsesstatus != null && forsendelsesstatus.getRegistreringstidspunkt() != null) {
             return new DateTime(forsendelsesstatus.getRegistreringstidspunkt().toGregorianCalendar().getTime());
         }
         return null;
@@ -226,16 +241,14 @@ public class AltinnForsendelseResponse implements Comparable<AltinnForsendelseRe
 
     @Override
     public int compareTo(AltinnForsendelseResponse other) {
-        Ordering<DateTime> NULLSLAST_ORDER =
-                Ordering.<DateTime>natural().nullsLast();
-
-        return NULLSLAST_ORDER.compare(this.getPrioriteringstidspunkt(), other.getPrioriteringstidspunkt());
+        Ordering<DateTime> nullslastOrder = Ordering.<DateTime>natural().nullsLast();
+        return nullslastOrder.compare(this.getPrioriteringstidspunkt(), other.getPrioriteringstidspunkt());
     }
 
     public String getPrioriteringstidspunktOgStatusAsString() {
-        if(forsendelsesstatus.getRegistreringstidspunkt()== null && forsendelsesstatus.getBehandlingsutfall()==null) {
+        if (forsendelsesstatus.getRegistreringstidspunkt() == null && forsendelsesstatus.getBehandlingsutfall() == null) {
             return "Mottatt response uten prioriteringstidspunkt og behandlingsutfall. Denne er AVVIST.";
         }
-        return "Prioriteringstidspunkt: "+forsendelsesstatus.getRegistreringstidspunkt() + ", Behandlingsutfall: "+forsendelsesstatus.getBehandlingsutfall() + ", Saksstatus: " + forsendelsesstatus.getSaksstatus();
+        return "Prioriteringstidspunkt: " + forsendelsesstatus.getRegistreringstidspunkt() + ", Behandlingsutfall: " + forsendelsesstatus.getBehandlingsutfall() + ", Saksstatus: " + forsendelsesstatus.getSaksstatus();
     }
 }

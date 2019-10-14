@@ -35,10 +35,10 @@ public class LastNedTilgjengeligeFilerScenario {
 
 
     private AltinnForsendelse matchMotInnsendtForsendelse(AltinnForsendelseResponse forsendelseResponse) {
-        //Matcher først mot forsendelsereferanse satt i payload som blir sendt til elektronisk tinglysing. Denne blir det validert mot i elektronisk tinglysing at er unik pr forsendelse.
+        // Matcher først mot forsendelsereferanse satt i payload som blir sendt til elektronisk tinglysing. Denne blir det validert mot i elektronisk tinglysing at er unik pr forsendelse.
         AltinnForsendelse matchendeForsendelseRequest = matchMotForsendelsereferanseFraForsendelse(forsendelseResponse);
 
-        //Dersom ingen match forsøk match mot sendersreference satt i manifest i BrokerServiceInitiation.
+        // Dersom ingen match forsøk match mot sendersreference satt i manifest i BrokerServiceInitiation.
         if (matchendeForsendelseRequest == null) {
             matchendeForsendelseRequest = matchMotSendersReferenceFraAltinnManifest(forsendelseResponse);
         }
