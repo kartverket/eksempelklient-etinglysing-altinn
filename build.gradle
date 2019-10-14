@@ -73,7 +73,7 @@ dependencies {
     compile libraries.slf4j_simple
     compile libraries.jodatime
     compile libraries.guava
-    compile (libraries.jaxb2_basics_runtime) {
+    compile(libraries.jaxb2_basics_runtime) {
         exclude module: 'jaxb-runtime'
         exclude module: 'jaxb-api'
     }
@@ -128,10 +128,10 @@ task createGeneratedDir() {
     def classesDir = sourceSets.main.output.classesDir
     def destDir = generatedSrcDir
 
-    if(!classesDir.exists()) {
+    if (!classesDir.exists()) {
         classesDir.mkdirs()
     }
-    if( !destDir.exists() ) {
+    if (!destDir.exists()) {
         destDir.mkdirs()
     }
 }
