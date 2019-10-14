@@ -77,7 +77,7 @@ public class AltinnEksempelKlient {
         try {
             return InnsendingOperation.valueOf(operationAsString);
         } catch (IllegalArgumentException e) {
-            List<String> validOperations = Arrays.asList(InnsendingOperation.values()).stream().map(Enum::name).collect(Collectors.toList());
+            List<String> validOperations = Arrays.stream(InnsendingOperation.values()).map(Enum::name).collect(Collectors.toList());
             log.error("Første parameter må angi operasjon (Gyldige verdier: {}). Angitt verdi er ugyldig: '{}'", String.join(" ,", validOperations), operationAsString);
             System.exit(-1);
             return null;

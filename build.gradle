@@ -70,6 +70,7 @@ dependencies {
     provided libraries.jaxb_jaxb_impl
 
     compile libraries.slf4j
+    compile libraries.slf4j_simple
     compile libraries.jodatime
     compile libraries.guava
     compile (libraries.jaxb2_basics_runtime) {

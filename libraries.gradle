@@ -1,5 +1,6 @@
 final def jaxb2Version = '0.9.3'
 final def jaxwsVersion = '2.2.10'
+final def slf4jVersion = '1.7.28'
 
 ext.libraries = [
         junit               : 'junit:junit:4.12',
@@ -15,6 +16,7 @@ ext.libraries = [
         gbok_innsending     : "no.kartverket.grunnbok:gbok-innsending:3.8.0-SNAPSHOT",
         guava               : 'com.google.guava:guava:18.0',
         jodatime            : 'joda-time:joda-time:2.3',
-        slf4j               : 'org.slf4j:slf4j-api:1.7.28'
+        slf4j               : "org.slf4j:slf4j-api:${slf4jVersion}",
+        slf4j_simple        : "org.slf4j:slf4j-simple:${slf4jVersion}"
 ]
 

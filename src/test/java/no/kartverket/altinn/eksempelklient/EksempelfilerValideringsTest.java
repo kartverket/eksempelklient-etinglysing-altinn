@@ -28,8 +28,8 @@ public class EksempelfilerValideringsTest {
     @Test
     public void sjekkAtAlleEksempelfilerValidererTest() throws IOException {
         List<String> validationFailures = new ArrayList<>();
-        File[] files = new File("src/main/resources/eksempelfiler").listFiles();
         List<String> doNotValidate = Collections.singletonList("ugyldig.xml");
+        File[] files = new File("src/main/resources/eksempelfiler").listFiles();
 
         assert files != null;
 
