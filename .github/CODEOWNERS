@@ -1,0 +1,12 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+#
+# More information: https://docs.github.com/en/articles/about-code-owners
+#
+#------------------------------------------------------------------------------
+#
+# Denne koden forvaltes av:  Team DigiBok
+# Dokumentasjon:             https://kartverket.atlassian.net/wiki/spaces/TGBOK/overview
+# Virksomhetsapplikasjon:    https://kartverket.service-now.com/nav_to.do?uri=cmdb_ci_business_app.do?sys_id=fdd128d21b34ec5038c4ec2e6e4bcb48%26sysparm_view=Kartverkets_applikasjonsportefølje
+
+* @kartverket/digibok
