@@ -20,12 +20,16 @@ import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelse;
 import no.kartverket.altinn.eksempelklient.domain.AltinnForsendelseResponse;
 import no.kartverket.altinn.eksempelklient.domain.AltinnTrackerInformation;
 import no.kartverket.altinn.eksempelklient.domain.InnsendingOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBElement;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AltinnService {
+
+    private final Logger log = LoggerFactory.getLogger(AltinnService.class);
 
     private final AltinnServiceFactory serviceFactory;
     private final String systemUser;
@@ -64,8 +68,10 @@ public class AltinnService {
 
     public List<AltinnForsendelseResponse> lastNedTilgjengeligeFiler(String reportee) {
         BrokerServiceAvailableFileList avaliableFileList = hentTingjengeligeFiler(reportee);
-        System.out.println(String.format("Fant %d nye filer tilgjengelig for nedlasting i Altinn", avaliableFileList.getBrokerServiceAvailableFile().size()));
-        return avaliableFileList.getBrokerServiceAvailableFile().stream().map(avaliableFile -> lastNedFil(avaliableFile, reportee)).collect(Collectors.toList());
+        log.info("Fant {} nye filer tilgjengelig for nedlasting i Altinn", avaliableFileList.getBrokerServiceAvailableFile().size());
+        return avaliableFileList.getBrokerServiceAvailableFile().stream()
+                .map(avaliableFile -> lastNedFil(avaliableFile, reportee))
+                .collect(Collectors.toList());
     }
 
     private BrokerServiceAvailableFileList hentTingjengeligeFiler(String reportee) {
@@ -74,7 +80,7 @@ public class AltinnService {
         try {
             return brokerServiceExternalBasicService.getAvailableFilesBasic(systemUser, systemPassword, searchParameters);
         } catch (IBrokerServiceExternalBasicGetAvailableFilesBasicAltinnFaultFaultFaultMessage message) {
-            throw new RuntimeException("ERROR: Kunne ikke hente tilgjengelige filer fra altinn, "+ getAltinnFaultAsString(message.getFaultInfo()));
+            throw new RuntimeException("ERROR: Kunne ikke hente tilgjengelige filer fra altinn, " + getAltinnFaultAsString(message.getFaultInfo()));
         }
     }
 
@@ -89,20 +95,20 @@ public class AltinnService {
     }
 
 
-    private AltinnForsendelseResponse lastNedFil(BrokerServiceAvailableFile brokerAvaliableFile, String reportee) {
-        String sendersReference = brokerAvaliableFile.getSendersReference() != null ? brokerAvaliableFile.getSendersReference().getValue() : null;
-        String fileReference = brokerAvaliableFile.getFileReference();
-        Integer receiptId = brokerAvaliableFile.getReceiptID();
+    private AltinnForsendelseResponse lastNedFil(BrokerServiceAvailableFile brokerAvailableFile, String reportee) {
+        String sendersReference = brokerAvailableFile.getSendersReference() != null ? brokerAvailableFile.getSendersReference().getValue() : null;
+        String fileReference = brokerAvailableFile.getFileReference();
+        Integer receiptId = brokerAvailableFile.getReceiptID();
         AltinnTrackerInformation altinnTrackerInformation = new AltinnTrackerInformation(sendersReference, fileReference, receiptId);
         AltinnForsendelseResponse forsendelseResponse = new AltinnForsendelseResponse(altinnTrackerInformation);
         IBrokerServiceExternalBasicStreamed brokerServiceExternalBasicServiceStreamed = serviceFactory.getBrokerServiceExternalBasicServiceStreamed();
-        System.out.println(String.format("Lastet ned fil med filreferanse %s fra Altinn" , forsendelseResponse.getAltinnTrackerInformation().getFileReference()));
+        log.info("Lastet ned fil med filreferanse {} fra Altinn" , forsendelseResponse.getAltinnTrackerInformation().getFileReference());
         try {
-            byte[] zipPayload = brokerServiceExternalBasicServiceStreamed.downloadFileStreamedBasic(systemUser, systemPassword, brokerAvaliableFile.getFileReference(), reportee);
+            byte[] zipPayload = brokerServiceExternalBasicServiceStreamed.downloadFileStreamedBasic(systemUser, systemPassword, brokerAvailableFile.getFileReference(), reportee);
             forsendelseResponse.extractResponseFromZip(zipPayload);
-            confirmDownload(brokerAvaliableFile.getFileReference(), reportee);
+            confirmDownload(brokerAvailableFile.getFileReference(), reportee);
             updateReceipt(receiptId);
-            System.out.println(String.format("Lastet ned zipfil som inneholder fil %s" , forsendelseResponse.getFileName()));
+            log.info("Lastet ned zipfil som inneholder fil {}" , forsendelseResponse.getFileName());
             return forsendelseResponse;
         } catch (IBrokerServiceExternalBasicStreamedDownloadFileStreamedBasicAltinnFaultFaultFaultMessage message) {
             throw new RuntimeException("ERROR: Kunne ikke laste ned fil fra altinn, "+getAltinnFaultAsString(message.getFaultInfo()));
@@ -166,7 +172,7 @@ public class AltinnService {
         try {
             receiptExternalBasic.updateReceiptBasic(systemUser, systemPassword, receipt);
         } catch (IReceiptExternalBasicUpdateReceiptBasicAltinnFaultFaultFaultMessage message) {
-            System.out.println("ERROR: Fikk ikke oppdatert kvittering på nedlastet fil, "+getAltinnFaultAsString(message.getFaultInfo()));
+            log.error("Fikk ikke oppdatert kvittering på nedlastet fil: {}", getAltinnFaultAsString(message.getFaultInfo()));
         }
     }
 
