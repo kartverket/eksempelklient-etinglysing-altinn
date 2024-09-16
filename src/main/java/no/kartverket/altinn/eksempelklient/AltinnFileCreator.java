@@ -6,14 +6,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class AltinnFileCreator {
 
-    public AltinnFileCreator(String filename, byte[] content, OutputStream outputStream) {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream, Charset.forName("ISO-8859-1"))){
+    public static void createFile(String filename, byte[] content, OutputStream outputStream) {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream, StandardCharsets.ISO_8859_1)){
             zipOutputStream.setMethod(ZipOutputStream.STORED);
             createFileEntry(filename, content, zipOutputStream);
         } catch (IOException e) {
@@ -21,7 +22,7 @@ public class AltinnFileCreator {
         }
     }
 
-    private void createFileEntry(String filename, byte[] content, ZipOutputStream zipOutputStream) throws IOException {
+    private static void createFileEntry(String filename, byte[] content, ZipOutputStream zipOutputStream) throws IOException {
         ZipEntry response = new ZipEntry(filename);
         CRC32 crc32 = new CRC32();
         crc32.update(content);

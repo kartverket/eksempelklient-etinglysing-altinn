@@ -1,16 +1,27 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://nexus.grunnbok.no/repository/maven-public/"
+    }
+}
+
 group = 'no.kartverket.altinn'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
-apply plugin: 'idea'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 apply from: file('libraries.gradle')
 
 def generatedSrcDir = file("$buildDir/generated-src")
-
 
 configurations {
     provided
@@ -28,7 +39,6 @@ sourceSets {
     }
 }
 
-
 idea.module {
     //scopes.PROVIDED.plus += [ configurations.provided ]
     //Needed to make IDEA see the generated classes
@@ -36,22 +46,11 @@ idea.module {
     sourceDirs += generatedSrcDir
 }
 
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
-compileJava.dependsOn(processResources)
-repositories {
-    mavenCentral()
-    maven {
-        url "https://nexus.grunnbok.no/repository/maven-public/"
-    }
-}
-
 configurations {
     wsImport
     wsImportWithXJCBinding
     innsendingService
 }
-
 
 dependencies {
     wsImport libraries.jaxws_tools
@@ -70,9 +69,11 @@ dependencies {
     provided libraries.jaxb_xjc
     provided libraries.jaxb_jaxb_impl
 
+    compile libraries.slf4j
+    compile libraries.slf4j_simple
     compile libraries.jodatime
     compile libraries.guava
-    compile (libraries.jaxb2_basics_runtime) {
+    compile(libraries.jaxb2_basics_runtime) {
         exclude module: 'jaxb-runtime'
         exclude module: 'jaxb-api'
     }
@@ -82,20 +83,22 @@ dependencies {
     testRuntime libraries.gbok_innsending
 }
 
-task checkJavaVersion << {
+
+tasks.withType(Test) {
+    systemProperties = System.getProperties()
+}
+
+task checkJavaVersion() {
     if (!JavaVersion.current().isJava8()) {
-        String message = "ERROR: Java 1.8 er p�krevet, men " +
+        String message = "ERROR: Java 1.8 er påkrevet, men " +
                 JavaVersion.current() +
                 " blir benyttet. Endre JAVA_HOME systemvariabel og PATH slik at den bruker riktig java-versjon for bygging.";
         throw new IllegalStateException(message);
     }
 }
 
-tasks.withType(Test) {
-    systemProperties = System.getProperties()
-}
-
-task('demonstrerValider', group: 'Eksempelklient', type: JavaExec) {
+task demonstrerValider(type: JavaExec) {
+    group = 'Eksempelklient'
     description = 'Demonstrerer validering av pant som blir godkjent og en som blir avvist pga formatfeil'
     classpath = sourceSets.main.runtimeClasspath
     main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
@@ -103,7 +106,8 @@ task('demonstrerValider', group: 'Eksempelklient', type: JavaExec) {
     systemProperties = System.getProperties()
 }
 
-task('demonstrerSendTilTinglysing', group: 'Eksempelklient', type: JavaExec) {
+task demonstrerSendTilTinglysing(type: JavaExec) {
+    group = 'Eksempelklient'
     description = 'Demonstrerer innsending av pant som blir godkjent, blir avvisst pga duplikat forsendelsesreferanse og en som blir avvist pga formatfeil'
     classpath = sourceSets.main.runtimeClasspath
     main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
@@ -111,7 +115,8 @@ task('demonstrerSendTilTinglysing', group: 'Eksempelklient', type: JavaExec) {
     systemProperties = System.getProperties()
 }
 
-task('demonstrerHentStatus', group: 'Eksempelklient', type: JavaExec) {
+task demonstrerHentStatus(type: JavaExec) {
+    group = 'Eksempelklient'
     description = 'Demonstrerer innsending av pant som blir godkjent, blir avvisst pga duplikat forsendelsesreferanse og en som blir avvist pga formatfeil'
     classpath = sourceSets.main.runtimeClasspath
     main = 'no.kartverket.altinn.eksempelklient.AltinnEksempelKlient'
@@ -119,28 +124,27 @@ task('demonstrerHentStatus', group: 'Eksempelklient', type: JavaExec) {
     systemProperties = System.getProperties()
 }
 
-
-//noinspection GroovyAssignabilityCheck
-task createGeneratedDir() << {
+task createGeneratedDir() {
     def classesDir = sourceSets.main.output.classesDir
     def destDir = generatedSrcDir
 
-    if(!classesDir.exists()) {
+    if (!classesDir.exists()) {
         classesDir.mkdirs()
     }
-    if( !destDir.exists() ) {
+    if (!destDir.exists()) {
         destDir.mkdirs()
     }
 }
+task extractInnsendingService(type: Copy) {
+    dependsOn createGeneratedDir
 
-task extractInnsendingService(dependsOn: createGeneratedDir, type: Copy) {
-    from {
-        configurations.innsendingService.collect { zipTree(it) }
-    }
+    from { configurations.innsendingService.collect { zipTree(it) } }
     into "$buildDir/innsendingService/"
 }
 
-task wsImportBrokerServiceExternalBasic(dependsOn: createGeneratedDir) {
+task wsImportBrokerServiceExternalBasic() {
+    dependsOn createGeneratedDir
+
     def sourceWsdl = file('src/main/resources/altinn/BrokerServiceExternalBasic.wsdl')
     inputs.file sourceWsdl
     outputs.dir generatedSrcDir
@@ -156,7 +160,9 @@ task wsImportBrokerServiceExternalBasic(dependsOn: createGeneratedDir) {
 }
 
 
-task wsImportBrokerServiceExternalBasicStreamed(dependsOn: createGeneratedDir) {
+task wsImportBrokerServiceExternalBasicStreamed() {
+    dependsOn createGeneratedDir
+
     def sourceWsdl = file('src/main/resources/altinn/BrokerServiceExternalBasicStreamed.wsdl')
     inputs.file sourceWsdl
     outputs.dir generatedSrcDir
@@ -173,7 +179,9 @@ task wsImportBrokerServiceExternalBasicStreamed(dependsOn: createGeneratedDir) {
     }
 }
 
-task wsImportReceiptExternalBasic(dependsOn: createGeneratedDir) {
+task wsImportReceiptExternalBasic() {
+    dependsOn createGeneratedDir
+
     def sourceWsdl = file('src/main/resources/altinn/ReceiptExternalBasic.wsdl')
     inputs.file sourceWsdl
     outputs.dir generatedSrcDir
@@ -188,7 +196,9 @@ task wsImportReceiptExternalBasic(dependsOn: createGeneratedDir) {
     }
 }
 
-task wsImportInnsendingService(dependsOn: extractInnsendingService) {
+task wsImportInnsendingService() {
+    dependsOn extractInnsendingService
+
     def sourceWsdl = file("$buildDir/innsendingService/InnsendingServiceWS.wsdl")
     inputs.file sourceWsdl
     outputs.dir generatedSrcDir
@@ -204,8 +214,10 @@ task wsImportInnsendingService(dependsOn: extractInnsendingService) {
     }
 }
 
-task jaxbImportManifest(dependsOn: createGeneratedDir) {
-    def sourceXsd = file("src/main/resources/altinn/BrokerServiceManifest.2015.06.xsd")
+task jaxbImportManifest() {
+    dependsOn createGeneratedDir
+
+    def sourceXsd = file('src/main/resources/altinn/BrokerServiceManifest.2015.06.xsd')
     inputs.file sourceXsd
     outputs.dir generatedSrcDir
 
@@ -219,10 +231,10 @@ task jaxbImportManifest(dependsOn: createGeneratedDir) {
     }
 }
 
-
+compileJava.dependsOn processResources
 compileJava.dependsOn checkJavaVersion
-compileJava.dependsOn(wsImportBrokerServiceExternalBasic)
-compileJava.dependsOn(wsImportBrokerServiceExternalBasicStreamed)
-compileJava.dependsOn(wsImportReceiptExternalBasic)
-compileJava.dependsOn(wsImportInnsendingService)
-compileJava.dependsOn(jaxbImportManifest)
+compileJava.dependsOn wsImportBrokerServiceExternalBasic
+compileJava.dependsOn wsImportBrokerServiceExternalBasicStreamed
+compileJava.dependsOn wsImportReceiptExternalBasic
+compileJava.dependsOn wsImportInnsendingService
+compileJava.dependsOn jaxbImportManifest

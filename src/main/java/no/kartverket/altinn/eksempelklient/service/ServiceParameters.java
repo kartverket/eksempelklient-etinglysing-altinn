@@ -3,8 +3,10 @@ package no.kartverket.altinn.eksempelklient.service;
 import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class ServiceParameters {
     private Properties environment;
@@ -23,14 +25,14 @@ public class ServiceParameters {
         return (String) environment.get(ParameterKey.ServiceCode.getKey());
     }
 
-    public int  getServiceEdtionCode() {
+    public int getServiceEdtionCode() {
         try {
             return Integer.parseInt((String) environment.get(ParameterKey.ServiceEditionCode.getKey()));
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new RuntimeException(String.format("Feil i konfigurasjon: %s må være en numerisk verdi", ParameterKey.ServiceEditionCode.getKey()));
         }
     }
+
     public String getSystemUserName() {
         return (String) environment.get(ParameterKey.SystemUserName.getKey());
     }
@@ -48,19 +50,18 @@ public class ServiceParameters {
     }
 
     private void validate() {
-        List<String> configurationErrors = new ArrayList<>();
-        for (ParameterKey parameterKey : ParameterKey.values()) {
-            if (!environment.containsKey(parameterKey.getKey())) {
-                configurationErrors.add(String.format("manglende verdi for konfigurasjonsparameter '%s'", parameterKey.getKey()));
-            }
-        }
+        List<String> configurationErrors = Arrays.stream(ParameterKey.values())
+                .filter(parameterKey -> !environment.containsKey(parameterKey.getKey()))
+                .map(parameterKey -> String.format("manglende verdi for konfigurasjonsparameter '%s'", parameterKey.getKey()))
+                .collect(Collectors.toList());
+
         if (!configurationErrors.isEmpty()) {
-            throw new RuntimeException("Feil i konfigurasjon:"+ Joiner.on("\n").join(configurationErrors));
+            throw new RuntimeException("Feil i konfigurasjon:" + Joiner.on("\n").join(configurationErrors));
         }
 
     }
 
-    public enum  ParameterKey {
+    public enum ParameterKey {
         Server("altinn.server"),
         ServiceCode("altinn.serviceCode"),
         ServiceEditionCode("altinn.serviceEditionCode"),
