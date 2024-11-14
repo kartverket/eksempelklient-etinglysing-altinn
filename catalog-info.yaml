@@ -10,29 +10,3 @@ spec:
   lifecycle: "production"
   owner: "digibok"
   system: "grunnbok"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Group"
-metadata:
-  name: "security_champion_eksempelklient-etinglysing-altinn"
-  title: "Security Champion eksempelklient-etinglysing-altinn"
-spec:
-  type: "security_champion"
-  parent: "eiendom_security_champions"
-  members:
-  - "haakl"
-  children:
-  - "resource:eksempelklient-etinglysing-altinn"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Resource"
-metadata:
-  name: "eksempelklient-etinglysing-altinn"
-  links:
-  - url: "https://github.com/kartverket/eksempelklient-etinglysing-altinn"
-    title: "eksempelklient-etinglysing-altinn på GitHub"
-spec:
-  type: "repo"
-  owner: "security_champion_eksempelklient-etinglysing-altinn"
-  dependencyOf:
-  - "component:eksempelklient-etinglysing-altinn"
