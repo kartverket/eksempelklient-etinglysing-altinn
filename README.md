@@ -1,3 +1,6 @@
+> [!NOTE]
+> Arkivert - Altinn 2, som denne dokumentasjon omhandler, er erstattet av Altinn 3.
+
 # Byggestatus
 
 ![Byggestatus](https://travis-ci.org/kartverket/eksempelklient-etinglysing-altinn.svg?branch=release "Byggestatus")
